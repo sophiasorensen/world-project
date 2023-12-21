@@ -1,19 +1,15 @@
-import './App.css';
+import "./App.css";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Navbar } from "./Navbar";
 
 function App() {
-  return (
-    <div className="App">
-        <h1 className="title"> World</h1>
-        <Continent name = "North America" />
-    </div>
-  );
-}
-const Continent = (props) => {
     return (
-      <div>
-          <h2> {props.name}</h2>
-      </div>
+        <div className="App">
+            <Router>
+                <Navbar />
+            </Router>
+        </div>
     );
-};
+}
 
 export default App;
