@@ -1,33 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
+import {useState} from "react";
 
 export const Navbar = () => {
+    let [currentNavbarId, setCurrentNavbarId] = useState("wo")
+
     return (
-        <div>
-            <Link to="/">🌎 World</Link>
-            <Link to="/africa">Africa</Link>
-            <Link to="/asia">Asia</Link>
-            <Link to="/europe">Europe</Link>
-            <Link to="/northAmerica">NorthAmerica</Link>
-            <Link to="/oceania">Oceania</Link>
-            <Link to="/southAmerica">South America</Link>
-        </div>
+        <Tabs id="Countries" onChange={setCurrentNavbarId} selectedTabId={currentNavbarId}>
+            <Tab id="wo" title="🌎 World" />
+            <Tab id="afr" title="Africa" />
+            <Tab id="as" title="Asia" />
+            <Tab id="eur" title="Europe" />
+            <Tab id="na" title="North America" />
+            <Tab id="oc" title="Oceania" />
+            <Tab id="sa" title="South America" />
+            <TabsExpander />
+            <input className="bp5-input" type="text" placeholder="Search..." />
+        </Tabs>
     );
 }
-
-// function Navbar() {
-//     return (
-//         <div className="Navbar">
-//             <h1 className="title">🌎 World</h1>
-//             <Continent name = "North America" />
-//         </div>
-//     );
-// }
-// const Continent = (props) => {
-//     return (
-//         <div>
-//             <h2> {props.name}</h2>
-//         </div>
-//     );
-// };
-//
-// export default Navbar;
