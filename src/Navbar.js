@@ -7,9 +7,9 @@ export const Navbar = () => {
     return (
         <Tabs id="Countries" onChange={setCurrentNavbarId} selectedTabId={currentNavbarId}>
             <Tab id="wo" title="🌎 World" />
-            <Tab id="afr" title="Africa" />
+            <Tab id="af" title="Africa" />
             <Tab id="as" title="Asia" />
-            <Tab id="eur" title="Europe" />
+            <Tab id="eu" title="Europe" />
             <Tab id="na" title="North America" />
             <Tab id="oc" title="Oceania" />
             <Tab id="sa" title="South America" />
