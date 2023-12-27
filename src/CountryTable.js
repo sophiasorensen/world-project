@@ -13,7 +13,7 @@ const LIST_COUNTRIES = gql`
       name
       code
       capital
-      emojiU
+      emoji
     }
   }
 `;
@@ -37,7 +37,7 @@ export const CountryTable = () => {
             {data.countries.map(function(country) {
                 return (
                     <tr key={country.code} value={country.code}>
-                        <td>{country.emojiU}</td>
+                        <td>{country.emoji}</td>
                         <td>{country.name}</td>
                         <td>{country.capital}</td>
                     </tr>
