@@ -1,8 +1,8 @@
 import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 import {useState} from "react";
 
-export const Navbar = () => {
-    let [currentNavbarId, setCurrentNavbarId] = useState("wo")
+export const Navbar = ({currentNavbarId, setCurrentNavbarId}) => {
+
 
     return (
         <Tabs id="Countries" onChange={setCurrentNavbarId} selectedTabId={currentNavbarId}>
