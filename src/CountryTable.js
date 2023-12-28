@@ -5,7 +5,7 @@ import { queryCountries } from "./queries";
 import ErrorPage from "./ErrorPage";
 import LoadingPage from "./LoadingPage";
 
-export const CountryTable = ({currentNavbarId}) => {
+export const CountryTable = ({ currentNavbarId }) => {
     const variables = { filter : currentNavbarId !== "WO" ? { continent:  { eq: currentNavbarId } } : { } }
 
     const {data, loading, error} = useQuery(queryCountries, { variables });
@@ -15,7 +15,7 @@ export const CountryTable = ({currentNavbarId}) => {
     }
 
     if (error) {
-        return <ErrorPage error={error}/>
+        return <ErrorPage error={ error }/>
     }
 
     return (
@@ -28,15 +28,15 @@ export const CountryTable = ({currentNavbarId}) => {
                 </tr>
             </thead>
             <tbody>
-            {data.countries.map((country) => {
+            { data.countries.map((country) => {
                 return (
-                    <tr key={country.code} value={country.code}>
-                        <td>{country.emoji}</td>
-                        <td>{country.name}</td>
-                        <td>{country.capital}</td>
+                    <tr key={ country.code } value={ country.code }>
+                        <td>{ country.emoji }</td>
+                        <td>{ country.name }</td>
+                        <td>{ country.capital }</td>
                     </tr>
                 );
-            })}
+            }) }
             </tbody>
         </table>
     );

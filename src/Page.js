@@ -7,8 +7,8 @@ export default function Page() {
 
     return (
         <div>
-            <Navbar currentNavbarId={currentNavbarId} setCurrentNavbarId={setCurrentNavbarId} />
-            <CountryTable currentNavbarId={currentNavbarId} />
+            <Navbar currentNavbarId={ currentNavbarId } setCurrentNavbarId={ setCurrentNavbarId } />
+            <CountryTable currentNavbarId={ currentNavbarId } />
         </div>
     );
 }
