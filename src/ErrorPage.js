@@ -1,6 +1,8 @@
 import {NonIdealState} from "@blueprintjs/core";
 
-export function ErrorPage({error}) {
+const errorDefault = { message: "Unexpected error occurred" }
+
+export default function ErrorPage({error = errorDefault}) {
     return (
       <NonIdealState
           icon="error"

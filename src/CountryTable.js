@@ -2,8 +2,8 @@ import "./App.css";
 import React from 'react';
 import { useQuery } from "@apollo/client";
 import { queryCountries } from "./queries";
-import { ErrorPage } from "./ErrorPage";
-import { LoadingPage } from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
+import LoadingPage from "./LoadingPage";
 
 export const CountryTable = ({currentNavbarId}) => {
     const variables = { filter : currentNavbarId !== "WO" ? { continent:  { eq: currentNavbarId } } : { } }

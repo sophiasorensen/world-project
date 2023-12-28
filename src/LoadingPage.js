@@ -1,6 +1,6 @@
 import { Spinner } from "@blueprintjs/core";
 
-export function LoadingPage() {
+export default function LoadingPage() {
     return (
         <Spinner/>
     );
