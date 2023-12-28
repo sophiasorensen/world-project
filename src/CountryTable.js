@@ -2,14 +2,19 @@ import "./App.css";
 import React from 'react';
 import { useQuery } from "@apollo/client";
 import { queryCountries } from "./queries";
+import { ErrorPage } from "./ErrorPage";
 
 export const CountryTable = ({currentNavbarId}) => {
     const variables = { filter : currentNavbarId !== "WO" ? { continent:  { eq: currentNavbarId } } : { } }
 
     const {data, loading, error} = useQuery(queryCountries, { variables });
 
-    if (loading || error) {
-        return <p>{error ? error.message : 'Loading...'}</p>;
+    if (loading) {
+        return <div>{'Loading...'}</div>;
+    }
+
+    if (error) {
+        return <ErrorPage error={error}/>
     }
 
     return (

@@ -1,7 +1,11 @@
-import {NonIdealState} from "@blueprintjs/core";
+import {NonIdealState, Spinner} from "@blueprintjs/core";
 
-export function ErrorPage() {
+export function ErrorPage({error}) {
     return (
-      <NonIdealState/>
+      <NonIdealState
+          icon="error"
+          title="No countries found"
+          description={error.message}
+      />
     );
 }
