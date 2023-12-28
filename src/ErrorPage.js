@@ -1,4 +1,4 @@
-import {NonIdealState, Spinner} from "@blueprintjs/core";
+import {NonIdealState} from "@blueprintjs/core";
 
 export function ErrorPage({error}) {
     return (
