@@ -1,9 +1,9 @@
 import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 
-export const Navbar = ({currentNavbarId, setCurrentNavbarId}) => {
+export const Navbar = ({ currentNavbarId, setCurrentNavbarId }) => {
     console.log(currentNavbarId);
     return (
-        <Tabs id="Countries" selectedTabId={currentNavbarId} onChange={setCurrentNavbarId}>
+        <Tabs id="Countries" selectedTabId={ currentNavbarId } onChange={ setCurrentNavbarId }>
             <Tab id="WO" title="🌎 World" />
             <Tab id="AF" title="Africa" />
             <Tab id="AS" title="Asia" />

@@ -1,5 +1,5 @@
 import "./App.css";
-import { ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import React from "react";
 import Page from "./Page";
 
@@ -12,7 +12,7 @@ function App() {
 
     return (
         <div className="global-margin">
-            <ApolloProvider client={client}>
+            <ApolloProvider client={ client }>
                 <Page/>
             </ApolloProvider>
         </div>
