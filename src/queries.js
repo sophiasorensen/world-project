@@ -10,3 +10,19 @@ export const queryCountries = gql`
     }
   }
 `;
+
+export const queryCountry=gql`
+    query CountryQuery($filter: CountryFilterInput!) {
+        country(filter: $filter) {
+            name
+            native
+            capital
+            emoji
+            currency
+            languages {
+              code
+              name
+            }
+        }
+    }
+`;
