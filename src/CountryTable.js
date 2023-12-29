@@ -5,20 +5,21 @@ import { queryCountries } from "./queries";
 import ErrorPage from "./ErrorPage";
 import LoadingPage from "./LoadingPage";
 
-const CountryRow = ({ setCurrentCountryCode, country }) => {
+const CountryRow = ({ setDialogOpen, setCurrentCountryCode, country }) => {
     function handleClick() {
+        setDialogOpen(true)
         setCurrentCountryCode(country.code)
     }
 
     return (
-        <tr key={ country.code } value={ country.code } onClick={ handleClick }>
+        <tr value={ country.code } onClick={ handleClick }>
             <td>{ country.emoji }</td>
             <td>{ country.name }</td>
             <td>{ country.capital }</td>
         </tr>
     );
 }
-export const CountryTable = ({ currentNavbarId, setCurrentCountryCode }) => {
+export const CountryTable = ({ currentNavbarId, setDialogOpen, setCurrentCountryCode }) => {
     const variables = { filter : currentNavbarId !== "WO" ? { continent:  { eq: currentNavbarId } } : { } }
 
     const { data, loading, error } = useQuery(queryCountries, { variables });
@@ -41,7 +42,12 @@ export const CountryTable = ({ currentNavbarId, setCurrentCountryCode }) => {
                 </tr>
             </thead>
             <tbody>
-            { data.countries.map((country) => <CountryRow setCurrentCountryCode={ setCurrentCountryCode } country={ country }/>) }
+            { data.countries.map((country) =>
+                <CountryRow key={ country.code }
+                            setDialogOpen={ setDialogOpen }
+                            setCurrentCountryCode={ setCurrentCountryCode }
+                            country={ country }
+                            />) }
             </tbody>
         </table>
     );

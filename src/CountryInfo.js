@@ -3,15 +3,31 @@ import { useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { queryCountry } from "./queries";
 import { Dialog, DialogBody } from "@blueprintjs/core";
+import LoadingPage from "./LoadingPage";
+import ErrorPage from "./ErrorPage";
 
-export default function CountryInfo({ currentCountryCode, setCurrentCountryCode }) {
-    const variables = { filter: currentCountryCode ? { code: { eq: currentCountryCode } } : { } };
+export default function CountryInfo({ dialogOpen, setDialogOpen, currentCountryCode }) {
+    const variables = { code: currentCountryCode };
     const { data, loading, error } = useQuery(queryCountry, { variables });
-    const handleClose = () => setCurrentCountryCode("")
+    const handleClose = () => setDialogOpen(false)
 
-    return <Dialog isOpen={currentCountryCode} onClose={ handleClose }>
+    console.log("current country: " + currentCountryCode)
+
+    if (error) {
+        return (
+            <Dialog isOpen={ dialogOpen } onClose={ handleClose }>
+                <DialogBody>
+                    <ErrorPage error={ error }/>
+                </DialogBody>
+            </Dialog>
+        );
+    }
+
+    if (data) console.log("data: " + data.country.name)
+
+    return <Dialog isOpen={ dialogOpen } onClose={ handleClose }>
         <DialogBody>
-            <p>Test dialog</p>
+            { loading ? <LoadingPage/> : data && <p>{ data.country.name }</p> }
         </DialogBody>
     </Dialog>
 }

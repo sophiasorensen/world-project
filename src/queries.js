@@ -12,8 +12,8 @@ export const queryCountries = gql`
 `;
 
 export const queryCountry=gql`
-    query CountryQuery($filter: CountryFilterInput!) {
-        country(filter: $filter) {
+    query CountryQuery($code: ID!) {
+        country(code: $code) {
             name
             native
             capital
