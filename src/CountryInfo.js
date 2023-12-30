@@ -20,7 +20,8 @@ export default function CountryInfo({ dialogOpen, setDialogOpen, currentCountryC
     const { data, loading, error } = useQuery(queryCountry, { variables });
     const handleClose = () => setDialogOpen(false)
 
-    return <Dialog isOpen={ dialogOpen } onClose={ handleClose }>
+    return (
+        <Dialog isOpen={ dialogOpen } onClose={ handleClose }>
         <DialogBody>
             { error && <ErrorPage error={ error } /> }
             { loading && <LoadingPage/> }
@@ -41,4 +42,5 @@ export default function CountryInfo({ dialogOpen, setDialogOpen, currentCountryC
                 </table> }
         </DialogBody>
     </Dialog>
+    );
 }
