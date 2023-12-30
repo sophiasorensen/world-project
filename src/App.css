@@ -6,3 +6,7 @@
     margin: 10px 40px 40px 40px;
 }
 
+.tab {
+    display: inline-block;
+    margin-left: 1em;
+}
