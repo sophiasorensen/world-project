@@ -2,8 +2,8 @@ import "./App.css";
 import React from 'react';
 import { useQuery } from "@apollo/client";
 import { queryCountries } from "./queries";
+import { Spinner } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
-import LoadingPage from "./LoadingPage";
 import Footer from "./Footer";
 
 const CountryRow = ({ setDialogOpen, setCurrentCountryCode, country }) => {
@@ -26,7 +26,7 @@ export const CountryTable = ({ currentNavbarId, setDialogOpen, setCurrentCountry
     const { data, loading, error } = useQuery(queryCountries, { variables });
 
     if (loading) {
-        return <LoadingPage/>
+        return <Spinner/>
     }
 
     if (error) {

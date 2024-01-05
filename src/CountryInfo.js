@@ -2,7 +2,6 @@ import * as React from "react";
 import { useQuery } from "@apollo/client";
 import { queryCountry } from "./queries";
 import { Dialog, DialogBody, Spinner } from "@blueprintjs/core";
-import LoadingPage from "./LoadingPage";
 import ErrorPage from "./ErrorPage";
 import "./App.css";
 
