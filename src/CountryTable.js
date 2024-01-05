@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import { queryCountries } from "./queries";
 import ErrorPage from "./ErrorPage";
 import LoadingPage from "./LoadingPage";
+import Footer from "./Footer";
 
 const CountryRow = ({ setDialogOpen, setCurrentCountryCode, country }) => {
     function handleClick() {
@@ -33,22 +34,25 @@ export const CountryTable = ({ currentNavbarId, setDialogOpen, setCurrentCountry
     }
 
     return (
-        <table className="bp5-html-table bp5-compact bp5-html-table-bordered bp5-html-table-striped bp5-interactive">
-            <thead>
-                <tr>
-                    <th>Flag</th>
-                    <th>Country</th>
-                    <th>Capital</th>
-                </tr>
-            </thead>
-            <tbody>
-            { data.countries.map((country) =>
-                <CountryRow key={ country.code }
-                            setDialogOpen={ setDialogOpen }
-                            setCurrentCountryCode={ setCurrentCountryCode }
-                            country={ country }
-                            />) }
-            </tbody>
-        </table>
+        <div>
+            <table className="bp5-html-table bp5-compact bp5-html-table-bordered bp5-html-table-striped bp5-interactive countries-table spacing-margin">
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Country</th>
+                        <th>Capital</th>
+                    </tr>
+                </thead>
+                <tbody>
+                { data.countries.map((country) =>
+                    <CountryRow key={ country.code }
+                                setDialogOpen={ setDialogOpen }
+                                setCurrentCountryCode={ setCurrentCountryCode }
+                                country={ country }
+                                />) }
+                </tbody>
+            </table>
+            <Footer/>
+        </div>
     );
 }

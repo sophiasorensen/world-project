@@ -6,7 +6,41 @@
     margin: 10px 40px 40px 40px;
 }
 
+.spacing-margin {
+    padding-bottom: 20px;
+}
+
 .tab {
     display: inline-block;
     margin-left: 1em;
+}
+
+.header {
+    width: max-content;
+    font-size: 30px;
+    font-weight: bold;
+    display: flex;
+    min-height: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.footer {
+    color: gray;
+    width: max-content;
+    min-height: 50px;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.countries-table {
+    width: 100%
+}
+
+.dialog-window {
+    width: 80%;
+    display: flex;
 }

@@ -2,6 +2,8 @@ import "./App.css";
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import React from "react";
 import Page from "./Page";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const client = new ApolloClient({
     cache: new InMemoryCache(),
@@ -13,6 +15,7 @@ function App() {
     return (
         <div className="global-margin">
             <ApolloProvider client={ client }>
+                <Header/>
                 <Page/>
             </ApolloProvider>
         </div>
