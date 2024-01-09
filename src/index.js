@@ -4,8 +4,6 @@ import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-
 const router = createBrowserRouter([
     {
         path: '/',
@@ -14,6 +12,6 @@ const router = createBrowserRouter([
     }
 ])
 
-root.render(
+ReactDOM.createRoot(document.getElementById("root")).render(
     <RouterProvider router={ router }/>
 );

@@ -14,13 +14,20 @@ function CountryDataRow({header, data}) {
     );
 }
 
-export default function CountryInfo({ dialogOpen, setDialogOpen, currentCountryCode }) {
-    const variables = { code: currentCountryCode };
+export default function CountryInfo({ searchParams, setSearchParams }) {
+    let continent = searchParams.get('continent') || "WO"
+    let dialog = searchParams.get('dialog')
+    let countryCode = searchParams.get('countryCode')
+
+    const variables = { code: countryCode };
     const { data, loading, error } = useQuery(queryCountry, { variables });
-    const handleClose = () => setDialogOpen(false)
+    function handleClose() {
+        dialog = false
+        setSearchParams({ ...searchParams, continent })
+    }
 
     return (
-        <Dialog isOpen={ dialogOpen } onClose={ handleClose } className="dialog-window">
+        <Dialog isOpen={ dialog } onClose={ handleClose } className="dialog-window">
             <DialogBody>
                 { error && <ErrorPage error={ error } /> }
                 { loading && <Spinner className="dialog-window"/> }

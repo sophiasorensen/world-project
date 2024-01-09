@@ -6,10 +6,12 @@ import { Spinner } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
 
-const CountryRow = ({ setDialogOpen, setCurrentCountryCode, country }) => {
-    function handleClick() {
-        setDialogOpen(true)
-        setCurrentCountryCode(country.code)
+const CountryRow = ({ searchParams, setSearchParams, country }) => {
+    function handleClick()  {
+        let continent = searchParams.get('continent') || "WO"
+        let dialog = true
+        let countryCode = country.code
+        setSearchParams({ ...searchParams, continent, dialog, countryCode })
     }
 
     return (
@@ -20,8 +22,9 @@ const CountryRow = ({ setDialogOpen, setCurrentCountryCode, country }) => {
         </tr>
     );
 }
-export const CountryTable = ({ currentNavbarId, setDialogOpen, setCurrentCountryCode }) => {
-    const variables = { filter : currentNavbarId !== "WO" ? { continent:  { eq: currentNavbarId } } : { } }
+export const CountryTable = ({ searchParams, setSearchParams }) => {
+    let currentContinent = searchParams.get('continent') || "WO"
+    let variables= { filter : currentContinent !== "WO" ? { continent:  { eq: currentContinent } } : { } }
 
     const { data, loading, error } = useQuery(queryCountries, { variables });
 
@@ -46,8 +49,8 @@ export const CountryTable = ({ currentNavbarId, setDialogOpen, setCurrentCountry
                 <tbody>
                 { data.countries.map((country) =>
                     <CountryRow key={ country.code }
-                                setDialogOpen={ setDialogOpen }
-                                setCurrentCountryCode={ setCurrentCountryCode }
+                                searchParams={ searchParams }
+                                setSearchParams={ setSearchParams }
                                 country={ country }
                                 />) }
                 </tbody>

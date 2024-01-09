@@ -2,17 +2,16 @@ import { Navbar } from "./Navbar";
 import { CountryTable } from "./CountryTable";
 import React, { useState } from "react";
 import CountryInfo from "./CountryInfo";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 
 export default function Page() {
-    let [ currentNavbarId, setCurrentNavbarId ] = useState("WO");
-    let [currentCountryCode, setCurrentCountryCode ] = useState("US");
-    let [ dialogOpen, setDialogOpen ] = useState(false);
+    let [searchParams, setSearchParams] = useSearchParams(createSearchParams());
 
     return (
         <div>
-            <Navbar currentNavbarId={ currentNavbarId } setCurrentNavbarId={ setCurrentNavbarId } />
-            <CountryTable currentNavbarId={ currentNavbarId } setDialogOpen={ setDialogOpen } setCurrentCountryCode={ setCurrentCountryCode } />
-            <CountryInfo dialogOpen={ dialogOpen } setDialogOpen={ setDialogOpen } currentCountryCode={ currentCountryCode } />
+            <Navbar searchParams={ searchParams } setSearchParams={ setSearchParams } />
+            <CountryTable searchParams={ searchParams } setSearchParams={ setSearchParams } />
+            <CountryInfo searchParams={ searchParams } setSearchParams={ setSearchParams } />
         </div>
     );
 }
