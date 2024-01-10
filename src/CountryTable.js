@@ -6,12 +6,10 @@ import { Spinner } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
 
-const CountryRow = ({ searchParams, setSearchParams, country }) => {
+
+const CountryRow = ({ searchParams, updateSearchParams, country }) => {
     function handleClick()  {
-        let continent = searchParams.get('continent') || "WO"
-        let dialog = true
-        let countryCode = country.code
-        setSearchParams({ ...searchParams, continent, dialog, countryCode })
+        updateSearchParams({ dialog: true, countryCode: country.code })
     }
 
     return (
@@ -22,7 +20,7 @@ const CountryRow = ({ searchParams, setSearchParams, country }) => {
         </tr>
     );
 }
-export const CountryTable = ({ searchParams, setSearchParams }) => {
+export const CountryTable = ({ searchParams, updateSearchParams }) => {
     let currentContinent = searchParams.get('continent') || "WO"
     let variables= { filter : currentContinent !== "WO" ? { continent:  { eq: currentContinent } } : { } }
 
@@ -50,7 +48,7 @@ export const CountryTable = ({ searchParams, setSearchParams }) => {
                 { data.countries.map((country) =>
                     <CountryRow key={ country.code }
                                 searchParams={ searchParams }
-                                setSearchParams={ setSearchParams }
+                                updateSearchParams={ updateSearchParams }
                                 country={ country }
                                 />) }
                 </tbody>

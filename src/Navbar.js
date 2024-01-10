@@ -1,10 +1,10 @@
 import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 import "./App.css";
 
-export const Navbar = ({ searchParams, setSearchParams }) => {
+export const Navbar = ({ searchParams, updateSearchParams }) => {
     function setContinent(code) {
-        let continent = code || "WO"
-        setSearchParams({ ...searchParams, continent })
+        // let continent = code || "WO";
+        updateSearchParams({ continent: code || "WO" });
     }
 
     return (

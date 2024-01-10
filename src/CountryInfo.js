@@ -14,16 +14,14 @@ function CountryDataRow({header, data}) {
     );
 }
 
-export default function CountryInfo({ searchParams, setSearchParams }) {
-    let continent = searchParams.get('continent') || "WO"
+export default function CountryInfo({ searchParams, updateSearchParams }) {
     let dialog = searchParams.get('dialog')
     let countryCode = searchParams.get('countryCode')
 
     const variables = { code: countryCode };
     const { data, loading, error } = useQuery(queryCountry, { variables });
     function handleClose() {
-        dialog = false
-        setSearchParams({ ...searchParams, continent })
+        updateSearchParams({ dialog: undefined })
     }
 
     return (
