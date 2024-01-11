@@ -15,17 +15,16 @@ function CountryDataRow({header, data}) {
 }
 
 export default function CountryInfo({ searchParams, updateSearchParams }) {
-    let dialog = searchParams.get('dialog')
-    let countryCode = searchParams.get('countryCode')
+    let country = searchParams.get('country');
 
-    const variables = { code: countryCode };
+    const variables = { code: country };
     const { data, loading, error } = useQuery(queryCountry, { variables });
     function handleClose() {
-        updateSearchParams({ dialog: undefined })
+        updateSearchParams({ 'country': null });
     }
 
     return (
-        <Dialog isOpen={ dialog } onClose={ handleClose } className="dialog-window">
+        <Dialog isOpen={ !!country } onClose={ handleClose } className="dialog-window">
             <DialogBody>
                 { error && <ErrorPage error={ error } /> }
                 { loading && <Spinner className="dialog-window"/> }

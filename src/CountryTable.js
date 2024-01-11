@@ -7,9 +7,9 @@ import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
 
 
-const CountryRow = ({ searchParams, updateSearchParams, country }) => {
+const CountryRow = ({ updateSearchParams, country }) => {
     function handleClick()  {
-        updateSearchParams({ dialog: true, countryCode: country.code })
+        updateSearchParams({ country: country.code })
     }
 
     return (
@@ -47,7 +47,6 @@ export const CountryTable = ({ searchParams, updateSearchParams }) => {
                 <tbody>
                 { data.countries.map((country) =>
                     <CountryRow key={ country.code }
-                                searchParams={ searchParams }
                                 updateSearchParams={ updateSearchParams }
                                 country={ country }
                                 />) }
