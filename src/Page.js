@@ -1,18 +1,29 @@
 import { Navbar } from "./Navbar";
 import { CountryTable } from "./CountryTable";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CountryInfo from "./CountryInfo";
+import { createSearchParams, useSearchParams } from "react-router-dom";
 
 export default function Page() {
-    let [ currentNavbarId, setCurrentNavbarId ] = useState("WO");
-    let [currentCountryCode, setCurrentCountryCode ] = useState("US");
-    let [ dialogOpen, setDialogOpen ] = useState(false);
+    let [searchParams, setSearchParams] = useSearchParams(createSearchParams());
+
+    function updateSearchParams(params) {
+        let newParams = {};
+        searchParams.forEach((value, key) => {
+            if (params[key] !== null) newParams[key] = value;
+        });
+
+        for (const [key,value] of Object.entries(params)) {
+            if (value !== null) newParams[key] = value;
+        }
+        setSearchParams(createSearchParams(newParams));
+    }
 
     return (
         <div>
-            <Navbar currentNavbarId={ currentNavbarId } setCurrentNavbarId={ setCurrentNavbarId } />
-            <CountryTable currentNavbarId={ currentNavbarId } setDialogOpen={ setDialogOpen } setCurrentCountryCode={ setCurrentCountryCode } />
-            <CountryInfo dialogOpen={ dialogOpen } setDialogOpen={ setDialogOpen } currentCountryCode={ currentCountryCode } />
+            <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
+            <CountryTable searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
+            <CountryInfo searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
         </div>
     );
 }

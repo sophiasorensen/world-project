@@ -14,13 +14,18 @@ function CountryDataRow({header, data}) {
     );
 }
 
-export default function CountryInfo({ dialogOpen, setDialogOpen, currentCountryCode }) {
-    const variables = { code: currentCountryCode };
-    const { data, loading, error } = useQuery(queryCountry, { variables });
-    const handleClose = () => setDialogOpen(false)
+export default function CountryInfo({ searchParams, updateSearchParams }) {
+    const country = searchParams.get('country');
+    const dialogEnabled = !!country;
+    const variables = dialogEnabled ? { code: country } : {};
+    const { data, loading, error } = useQuery(queryCountry, { variables, skip: !dialogEnabled });
+
+    function handleClose() {
+        updateSearchParams({ 'country': null });
+    }
 
     return (
-        <Dialog isOpen={ dialogOpen } onClose={ handleClose } className="dialog-window">
+        <Dialog isOpen={ dialogEnabled } onClose={ handleClose } className="dialog-window">
             <DialogBody>
                 { error && <ErrorPage error={ error } /> }
                 { loading && <Spinner className="dialog-window"/> }
@@ -29,14 +34,14 @@ export default function CountryInfo({ dialogOpen, setDialogOpen, currentCountryC
                         <thead>
                             <tr>
                                 <th>
-                                    { data.country.emoji }<span className="tab">{ data.country.name }</span>
+                                    { data?.country.emoji }<span className="tab">{ data?.country.name }</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <CountryDataRow header="Capital" data={ data.country.capital } />
-                            <CountryDataRow header="Currency" data={ data.country.currency } />
-                            <CountryDataRow header="Languages" data={ data.country.languages.map((language) => language.name).join(", ") } />
+                            <CountryDataRow header="Capital" data={ data?.country.capital } />
+                            <CountryDataRow header="Currency" data={ data?.country.currency } />
+                            <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
                         </tbody>
                     </table> }
             </DialogBody>

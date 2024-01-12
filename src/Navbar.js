@@ -1,10 +1,14 @@
 import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 import "./App.css";
 
-export const Navbar = ({ currentNavbarId, setCurrentNavbarId }) => {
+export const Navbar = ({ searchParams, updateSearchParams }) => {
+    function setContinent(code) {
+        updateSearchParams({ continent: code || "WO" });
+    }
+
     return (
         <div className="spacing-margin">
-            <Tabs id="Countries" selectedTabId={ currentNavbarId } onChange={ setCurrentNavbarId }>
+            <Tabs id="Countries" selectedTabId={ searchParams } onChange={ setContinent }>
                 <Tab id="WO" title="World" />
                 <Tab id="AF" title="Africa" />
                 <Tab id="AS" title="Asia" />
