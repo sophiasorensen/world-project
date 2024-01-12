@@ -3,7 +3,7 @@ import "./App.css";
 
 export const Navbar = ({ searchParams, updateSearchParams }) => {
     function setContinent(code) {
-        updateSearchParams({ continent: code || "WO", dialog: false });
+        updateSearchParams({ continent: code || "WO" });
     }
 
     return (
