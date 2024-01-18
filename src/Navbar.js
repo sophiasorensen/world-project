@@ -1,5 +1,6 @@
 import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 import "./App.css";
+import SearchBar from "./SearchBar";
 
 export const Navbar = ({ searchParams, updateSearchParams }) => {
     function setContinent(code) {
@@ -17,7 +18,7 @@ export const Navbar = ({ searchParams, updateSearchParams }) => {
                 <Tab id="OC" title="Oceania" />
                 <Tab id="SA" title="South America" />
                 <TabsExpander />
-                <input className="bp5-input" type="text" placeholder="Search..." />
+                <SearchBar searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
             </Tabs>
         </div>
     );

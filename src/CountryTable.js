@@ -22,6 +22,8 @@ const CountryRow = ({ updateSearchParams, country }) => {
 }
 export const CountryTable = ({ searchParams, updateSearchParams }) => {
     let currentContinent = searchParams.get('continent') || "WO"
+    let searchQuery = searchParams.get('searchQuery')
+    console.log(searchQuery)
     let variables= { filter : currentContinent !== "WO" ? { continent:  { eq: currentContinent } } : { } }
 
     const { data, loading, error } = useQuery(queryCountries, { variables });
