@@ -25,12 +25,9 @@ export const CountryTable = ({ searchParams, updateSearchParams }) => {
     let q = searchParams.get('q') || ""
     let qCap = q.charAt(0).toUpperCase() + q.slice(1)
 
-    let queryFilter = currentContinent === "WO" ? { name: { regex: `^.*${q}|${qCap}.*$`} } : { continent: { eq: currentContinent }, name: { regex: `^.*${q}|${qCap}.*$`} }
-
-    let variables= {
-        filter : queryFilter
-    }
-
+    let variables= { filter : { name: { regex: `^.*${q}|${qCap}.*$`} } }
+    if (currentContinent !== "WO")
+        variables.filter.continent = { eq: currentContinent }
 
     console.log(`${variables.toString()}`)
 
