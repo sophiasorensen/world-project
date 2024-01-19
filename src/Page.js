@@ -1,6 +1,6 @@
 import { Navbar } from "./Navbar";
 import { CountryTable } from "./CountryTable";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CountryInfo from "./CountryInfo";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 

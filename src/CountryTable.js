@@ -29,8 +29,6 @@ export const CountryTable = ({ searchParams, updateSearchParams }) => {
     if (currentContinent !== "WO")
         variables.filter.continent = { eq: currentContinent }
 
-    console.log(`${variables.toString()}`)
-
     const { data, loading, error } = useQuery(queryCountries, { variables });
 
     if (loading) {
