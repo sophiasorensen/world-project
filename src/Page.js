@@ -1,11 +1,11 @@
 import { Navbar } from "./Navbar";
 import { CountryTable } from "./CountryTable";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CountryInfo from "./CountryInfo";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 
 export default function Page() {
-    let [searchParams, setSearchParams] = useSearchParams(createSearchParams());
+    let [searchParams, setSearchParams] = useSearchParams(createSearchParams({ continent: "WO" }));
 
     function updateSearchParams(params) {
         let newParams = {};

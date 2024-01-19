@@ -22,7 +22,14 @@ const CountryRow = ({ updateSearchParams, country }) => {
 }
 export const CountryTable = ({ searchParams, updateSearchParams }) => {
     let currentContinent = searchParams.get('continent') || "WO"
-    let variables= { filter : currentContinent !== "WO" ? { continent:  { eq: currentContinent } } : { } }
+    let q = searchParams.get('q') || ""
+    let qCap = q.charAt(0).toUpperCase() + q.slice(1)
+
+    let variables= { filter : { name: { regex: `^.*${q}|${qCap}.*$`} } }
+    if (currentContinent !== "WO")
+        variables.filter.continent = { eq: currentContinent }
+
+    console.log(`${variables.toString()}`)
 
     const { data, loading, error } = useQuery(queryCountries, { variables });
 
