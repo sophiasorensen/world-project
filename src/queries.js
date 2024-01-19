@@ -15,6 +15,9 @@ export const queryCountry=gql`
     query CountryQuery($code: ID!) {
         country(code: $code) {
             name
+            continent {
+                name
+            }
             native
             capital
             emoji

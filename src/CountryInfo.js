@@ -39,6 +39,7 @@ export default function CountryInfo({ searchParams, updateSearchParams }) {
                             </tr>
                         </thead>
                         <tbody>
+                            <CountryDataRow header="Continent" data={ data?.country.continent.name } />
                             <CountryDataRow header="Capital" data={ data?.country.capital } />
                             <CountryDataRow header="Currency" data={ data?.country.currency } />
                             <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
