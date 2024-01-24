@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useQuery } from "@apollo/client";
 import { queryCountry } from "./queries";
-import { Dialog, DialogBody, Spinner } from "@blueprintjs/core";
+import { Dialog, DialogBody, Spinner, TextArea } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import "./App.css";
+import CountryUserCommentBox from "./CountryUserCommentBox";
 
 function CountryDataRow({header, data}) {
     return (
@@ -45,6 +46,7 @@ export default function CountryInfo({ searchParams, updateSearchParams }) {
                             <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
                         </tbody>
                     </table> }
+                <CountryUserCommentBox />
             </DialogBody>
         </Dialog>
     );
