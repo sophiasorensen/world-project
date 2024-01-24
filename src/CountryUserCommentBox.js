@@ -1,7 +1,9 @@
 import React from "react";
-import { Button, TextArea } from "@blueprintjs/core";
+import { Button, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
+import "./App.css";
+
 const CountryUserCommentBox = observer( class CountryUserCommentBox extends React.Component {
     commentText = "";
     writable = false;
@@ -14,16 +16,25 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
             writable:observable,
             setComment:action.bound,
             toggleReadability:action.bound,
+            saveNewComment:action.bound,
             buttons:action.bound
         })
     }
 
-    setComment(value) {
-        this.commentText = value;
+    setComment(event) {
+        this.commentText = event.target.value;
+        console.log(`setting comment to ${this.commentText}`)
     }
 
     toggleReadability() {
         this.writable = !this.writable;
+    }
+
+    saveNewComment() {
+        this.toggleReadability();
+        localStorage.setItem("comment", this.commentText);
+        console.log(`comment text: ${this.commentText}`);
+        console.log(`storage comment: ${localStorage.getItem("comment")}`);
     }
 
     buttons() {
@@ -31,7 +42,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         if (this.writable) {
             return (
                 <div>
-                    <Button onClick={ this.toggleReadability }>Save</Button>
+                    <Button onClick={ this.saveNewComment }>Save</Button>
                     <Button onClick={ this.toggleReadability }>Cancel</Button>
                 </div>
             );
@@ -45,8 +56,12 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     render() {
         return (
             <div>
-                <TextArea readOnly={ !this.writable } onChange={ this.setComment }/>
+                Comment
+                <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment }/>
                 { this.buttons() }
+
+                <p className="info-margin">URL</p>
+                <InputGroup/>
             </div>
         );
     }

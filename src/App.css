@@ -44,3 +44,7 @@
     width: 80%;
     display: flex;
 }
+
+.info-margin {
+    margin-top: 10px;
+}
