@@ -17,13 +17,13 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
             setComment:action.bound,
             toggleReadability:action.bound,
             saveNewComment:action.bound,
+            cancelNewComment:action.bound,
             buttons:action.bound
         })
     }
 
     setComment(event) {
         this.commentText = event.target.value;
-        console.log(`setting comment to ${this.commentText}`)
     }
 
     toggleReadability() {
@@ -33,17 +33,20 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     saveNewComment() {
         this.toggleReadability();
         localStorage.setItem("comment", this.commentText);
-        console.log(`comment text: ${this.commentText}`);
-        console.log(`storage comment: ${localStorage.getItem("comment")}`);
+
+    }
+
+    cancelNewComment() {
+        this.toggleReadability();
+        this.commentText = localStorage.getItem("comment");
     }
 
     buttons() {
-        console.log(`${this.writable}`);
         if (this.writable) {
             return (
                 <div>
                     <Button onClick={ this.saveNewComment }>Save</Button>
-                    <Button onClick={ this.toggleReadability }>Cancel</Button>
+                    <Button onClick={ this.cancelNewComment }>Cancel</Button>
                 </div>
             );
         } else {
@@ -57,7 +60,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         return (
             <div>
                 Comment
-                <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment }/>
+                <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment } value={ this.commentText } />
                 { this.buttons() }
 
                 <p className="info-margin">URL</p>
