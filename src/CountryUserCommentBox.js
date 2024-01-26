@@ -53,18 +53,19 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     }
 
     saveChanges() {
-        let countryCode = this.props.searchParams.get("country");
         this.toggleReadability();
+
+        let countryCode = this.props.searchParams.get("country");
         localStorage.setItem(countryCode, JSON.stringify({ comment: this.commentText, url: this.urlText }));
     }
 
     cancelChanges() {
         this.toggleReadability();
+        this.error = false;
+
         let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")));
-        console.log(`parsed JSON: ${parsed.comment} ${parsed.url}`)
         this.commentText = parsed.comment;
         this.urlText = parsed.url;
-        this.error = false;
     }
 
     buttons() {
