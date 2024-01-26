@@ -5,17 +5,24 @@ import { observer } from "mobx-react";
 import "./App.css";
 
 const CountryUserCommentBox = observer( class CountryUserCommentBox extends React.Component {
-    commentText = "";
-    urlText="";
+    validUrl1 = "http://";
+    validUrl2 = "https://";
+
+    commentText = localStorage.getItem("comment");
+    urlText = localStorage.getItem("url");
     writable = false;
+    error = false;
 
     constructor(props) {
         super(props);
 
         makeObservable(this, {
+            validUrl1:observable,
+            validUrl2:observable,
             commentText:observable,
             urlText: observable,
             writable:observable,
+            error:observable,
             setComment:action.bound,
             setUrl:action.bound,
             toggleReadability:action.bound,
@@ -31,6 +38,13 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     setUrl(event) {
         this.urlText = event.target.value;
+        if (this.urlText) {
+            if (this.urlText.substring(0, this.validUrl1.length) === this.validUrl1 || this.urlText.substring(0, this.validUrl2.length) === this.validUrl2) {
+                this.error = false;
+            } else {
+                this.error = true;
+            }
+        }
     }
 
     toggleReadability() {
@@ -70,7 +84,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
                 Comment
                 <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment } value={ this.commentText } />
                 <p className="info-margin">URL</p>
-                <InputGroup readOnly={ !this.writable } onChange={ this.setUrl } value={ this.urlText } />
+                <InputGroup readOnly={ !this.writable } onChange={ this.setUrl } value={ this.urlText } intent={ this.error ? "danger" : null } />
                 <p className="info-margin" />
                 { this.buttons() }
             </div>
