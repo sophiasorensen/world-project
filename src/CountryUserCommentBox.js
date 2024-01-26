@@ -61,14 +61,15 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         this.toggleReadability();
         this.commentText = localStorage.getItem("comment");
         this.urlText = localStorage.getItem("url");
+        this.error = false;
     }
 
     buttons() {
         if (this.writable) {
             return (
                 <div>
-                    <Button onClick={ this.saveChanges }>Save</Button>
-                    <Button onClick={ this.cancelChanges }>Cancel</Button>
+                    <Button className={ "button-margin" } intent={ "primary" } disabled={ this.error } onClick={ this.saveChanges }>Save</Button>
+                    <Button className={ "button-margin" } onClick={ this.cancelChanges }>Cancel</Button>
                 </div>
             );
         } else {
@@ -78,14 +79,23 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         }
     }
 
+    displayErrorMessage() {
+        if (this.error) {
+            return (
+                <p className={ "error-text" }>URLs must begin with "http://" or "https://"</p>
+            );
+        }
+    }
+
     render() {
         return (
             <div>
-                Comment
+                <p className="info-margin">Comment</p>
                 <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment } value={ this.commentText } />
                 <p className="info-margin">URL</p>
+                { this.displayErrorMessage() }
                 <InputGroup readOnly={ !this.writable } onChange={ this.setUrl } value={ this.urlText } intent={ this.error ? "danger" : null } />
-                <p className="info-margin" />
+                <p className={ "info-margin" } />
                 { this.buttons() }
             </div>
         );
