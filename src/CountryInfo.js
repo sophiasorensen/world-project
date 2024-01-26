@@ -46,7 +46,7 @@ export default function CountryInfo({ searchParams, updateSearchParams }) {
                             <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
                         </tbody>
                     </table> }
-                <CountryUserCommentBox />
+                <CountryUserCommentBox searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
             </DialogBody>
         </Dialog>
     );

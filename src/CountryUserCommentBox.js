@@ -7,9 +7,12 @@ import "./App.css";
 const CountryUserCommentBox = observer( class CountryUserCommentBox extends React.Component {
     validUrl1 = "http://";
     validUrl2 = "https://";
+    comment = "comment";
+    url = "url";
 
-    commentText = localStorage.getItem("comment");
-    urlText = localStorage.getItem("url");
+    initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")))
+    commentText = this.initJson ? this.initJson.comment : "";
+    urlText = this.initJson ? this.initJson.url : "";
     writable = false;
     error = false;
 
@@ -17,18 +20,16 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         super(props);
 
         makeObservable(this, {
-            validUrl1:observable,
-            validUrl2:observable,
             commentText:observable,
             urlText: observable,
             writable:observable,
             error:observable,
+
             setComment:action.bound,
             setUrl:action.bound,
             toggleReadability:action.bound,
             saveChanges:action.bound,
             cancelChanges:action.bound,
-            buttons:action.bound
         })
     }
 
@@ -52,15 +53,17 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     }
 
     saveChanges() {
+        let countryCode = this.props.searchParams.get("country");
         this.toggleReadability();
-        localStorage.setItem("comment", this.commentText);
-        localStorage.setItem("url", this.urlText);
+        localStorage.setItem(countryCode, JSON.stringify({ comment: this.commentText, url: this.urlText }));
     }
 
     cancelChanges() {
         this.toggleReadability();
-        this.commentText = localStorage.getItem("comment");
-        this.urlText = localStorage.getItem("url");
+        let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")));
+        console.log(`parsed JSON: ${parsed.comment} ${parsed.url}`)
+        this.commentText = parsed.comment;
+        this.urlText = parsed.url;
         this.error = false;
     }
 
