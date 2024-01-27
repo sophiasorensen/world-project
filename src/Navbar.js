@@ -4,12 +4,12 @@ import SearchBar from "./SearchBar";
 
 export const Navbar = ({ searchParams, updateSearchParams }) => {
     function setContinent(code) {
-        updateSearchParams({ continent: code || "WO" });
+        updateSearchParams({ continent: code !== "WO" ? code : null });
     }
 
     return (
         <div className="spacing-margin">
-            <Tabs id="Countries" selectedTabId={ searchParams } onChange={ setContinent }>
+            <Tabs id="continent" selectedTabId={ searchParams } onChange={ setContinent }>
                 <Tab id="WO" title="World" />
                 <Tab id="AF" title="Africa" />
                 <Tab id="AS" title="Asia" />

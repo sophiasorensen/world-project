@@ -1,7 +1,11 @@
 import "./App.css";
 
-export default function Header() {
+export default function Header({ updateSearchParams }) {
+    function updateCountry() {
+        updateSearchParams({ continent: null });
+    }
+
     return (
-        <div className="header spacing-margin">🌎 World Project</div>
+        <h1 className="header spacing-margin" onClick={ updateCountry }>🌎 World Project</h1>
     );
 }
