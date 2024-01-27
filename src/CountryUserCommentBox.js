@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, InputGroup, TextArea } from "@blueprintjs/core";
+import { Button, H6, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import "./App.css";
@@ -94,9 +94,10 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     render() {
         return (
             <div>
-                <p className="info-margin">Comment</p>
+                <div className="info-margin"/>
+                <H6 className="info-margin">Comment</H6>
                 <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment } value={ this.commentText } />
-                <p className="info-margin">URL</p>
+                <H6 className="info-margin">URL</H6>
                 { this.displayErrorMessage() }
                 <InputGroup readOnly={ !this.writable } onChange={ this.setUrl } value={ this.urlText } intent={ this.error ? "danger" : null } />
                 <p className={ "info-margin" } />
