@@ -8,8 +8,16 @@ import Footer from "./Footer";
 
 
 const CountryRow = ({ updateSearchParams, country }) => {
+    let localCountryData = JSON.parse(localStorage.getItem(country.code))
+    let localURL = localCountryData ? localCountryData.url : ""
     function handleClick()  {
         updateSearchParams({ country: country.code })
+    }
+
+    function createClickableURL() {
+        if (localURL) {
+            return (<a href={localURL}>{ localURL }</a>)
+        }
     }
 
     return (
@@ -17,6 +25,7 @@ const CountryRow = ({ updateSearchParams, country }) => {
             <td>{ country.emoji }</td>
             <td>{ country.name }</td>
             <td>{ country.capital }</td>
+            <td>{ createClickableURL() }</td>
         </tr>
     );
 }
@@ -47,6 +56,7 @@ export const CountryTable = ({ searchParams, updateSearchParams }) => {
                         <th>Flag</th>
                         <th>Country</th>
                         <th>Capital</th>
+                        <th>URL</th>
                     </tr>
                 </thead>
                 <tbody>

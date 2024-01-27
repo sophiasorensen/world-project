@@ -44,3 +44,18 @@
     width: 80%;
     display: flex;
 }
+
+.info-margin {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    min-height: 10px;
+}
+
+.error-text {
+    font-size: 10px;
+    color: red;
+}
+
+.button-margin {
+    margin-right: 3px;
+}
