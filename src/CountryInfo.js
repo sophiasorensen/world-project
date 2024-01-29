@@ -5,6 +5,7 @@ import { Dialog, DialogBody, Spinner, TextArea } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import "./App.css";
 import CountryUserCommentBox from "./CountryUserCommentBox";
+import { countryKey } from "./common";
 
 function CountryDataRow({header, data}) {
     return (
@@ -16,13 +17,13 @@ function CountryDataRow({header, data}) {
 }
 
 export default function CountryInfo({ searchParams, updateSearchParams }) {
-    const country = searchParams.get('country');
+    const country = searchParams.get(countryKey);
     const dialogEnabled = !!country;
     const variables = dialogEnabled ? { code: country } : {};
     const { data, loading, error } = useQuery(queryCountry, { variables, skip: !dialogEnabled });
 
     function handleClose() {
-        updateSearchParams({ 'country': null });
+        updateSearchParams({ country: null });
     }
 
     return (

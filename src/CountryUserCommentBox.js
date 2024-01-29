@@ -3,6 +3,7 @@ import { Button, H6, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import "./App.css";
+import {countryKey} from "./common";
 
 const validUrl1 = "http://";
 const validUrl2 = "https://";
@@ -13,9 +14,9 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     constructor(props) {
         super(props);
-        let initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")))
-        this.commentText = initJson ? initJson.comment : "";
-        this.urlText = initJson ? initJson.url : "";
+        let initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)))
+        this.commentText = initJson?.comment ?? "";
+        this.urlText = initJson?.url ?? "";
 
         makeObservable(this, {
             commentText:observable,
@@ -53,7 +54,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     saveChanges() {
         this.toggleReadability();
 
-        let countryCode = this.props.searchParams.get("country");
+        let countryCode = this.props.searchParams.get(countryKey);
         localStorage.setItem(countryCode, JSON.stringify({ comment: this.commentText, url: this.urlText }));
     }
 
@@ -61,7 +62,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         this.toggleReadability();
         this.error = false;
 
-        let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")));
+        let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)));
         this.commentText = parsed.comment;
         this.urlText = parsed.url;
     }
@@ -73,15 +74,15 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
                 <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment } value={ this.commentText } />
                 <H6 className="info-margin">URL</H6>
                 { this.error && <p className={ "error-text" }>
-                    URLs must begin with "http://" or "https://"
+                    URLs must begin with "{validUrl1}" or "{validUrl2}"
                 </p>
                 }
                 <InputGroup readOnly={ !this.writable } onChange={ this.setUrl } value={ this.urlText } intent={ this.error ? "danger" : null } />
                 <div className={ "info-margin" } />
                 { this.writable ?
                     <div>
-                        <Button className={ "button-margin" } intent={ "primary" } disabled={ this.error } onClick={ this.saveChanges }>Save</Button>
-                        <Button className={ "button-margin" } onClick={ this.cancelChanges }>Cancel</Button>
+                        <Button className="button-margin" intent="primary" disabled={ this.error } onClick={ this.saveChanges }>Save</Button>
+                        <Button className="button-margin" onClick={ this.cancelChanges }>Cancel</Button>
                     </div> : <Button onClick={ this.toggleReadability }>Edit</Button>
                 }
             </div>

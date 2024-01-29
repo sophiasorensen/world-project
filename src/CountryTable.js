@@ -5,6 +5,7 @@ import { queryCountries } from "./queries";
 import { Spinner } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
+import { continentKey, worldCode } from "./common";
 
 
 const CountryRow = ({ updateSearchParams, country }) => {
@@ -30,12 +31,12 @@ const CountryRow = ({ updateSearchParams, country }) => {
     );
 }
 export const CountryTable = ({ searchParams, updateSearchParams }) => {
-    let currentContinent = searchParams.get('continent') || "WO"
-    let q = searchParams.get('q') || ""
-    let qCap = q.charAt(0).toUpperCase() + q.slice(1)
+    let currentContinent = searchParams.get(continentKey) || worldCode;
+    let q = searchParams.get('q') || "";
+    let qCap = q.charAt(0).toUpperCase() + q.slice(1);
 
     let variables= { filter : { name: { regex: `^.*${q}|${qCap}.*$`} } }
-    if (currentContinent !== "WO")
+    if (currentContinent !== worldCode)
         variables.filter.continent = { eq: currentContinent }
 
     const { data, loading, error } = useQuery(queryCountries, { variables });

@@ -1,10 +1,11 @@
 import { Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 import "./App.css";
 import SearchBar from "./SearchBar";
+import { worldCode } from "./common";
 
 export const Navbar = ({ searchParams, updateSearchParams }) => {
     function setContinent(code) {
-        updateSearchParams({ continent: code !== "WO" ? code : null });
+        updateSearchParams({ continent: code !== worldCode ? code : null });
     }
 
     return (
