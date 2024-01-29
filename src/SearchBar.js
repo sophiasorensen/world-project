@@ -20,10 +20,11 @@ class SearchBar extends React.Component {
 
     handleSearchQuery(value) {
         this.setQ(value);
+        let { q } = this;
 
         setTimeout(() => {
-            if (value !== this.q) return;
-            this.props.updateSearchParams({ q: this.q || null })
+            if (value !== q) return;
+            this.props.updateSearchParams({ q: q || null })
         }, 500);
 
     }

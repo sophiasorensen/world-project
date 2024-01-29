@@ -37,9 +37,11 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     }
 
     setUrl(event) {
+        let { urlText } = this;
+
         this.urlText = event.target.value;
-        if (this.urlText) {
-            if (this.urlText.substring(0, validUrl1.length) === validUrl1 || this.urlText.substring(0, validUrl2.length) === validUrl2) {
+        if (urlText) {
+            if (urlText.substring(0, validUrl1.length) === validUrl1 || urlText.substring(0, validUrl2.length) === validUrl2) {
                 this.error = false;
             } else {
                 this.error = true;
@@ -68,20 +70,28 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     }
 
     render() {
+        let {
+
+            commentText,
+            urlText,
+            writable,
+            error
+        } = this;
+
         return (
             <div className="info-margin">
                 <H6 className="info-margin">Comment</H6>
-                <TextArea fill={ true } readOnly={ !this.writable } onChange={ this.setComment } value={ this.commentText } />
+                <TextArea fill={ true } readOnly={ !writable } onChange={ this.setComment } value={ commentText } />
                 <H6 className="info-margin">URL</H6>
-                { this.error && <p className={ "error-text" }>
+                { error && <p className={ "error-text" }>
                     URLs must begin with "{validUrl1}" or "{validUrl2}"
                 </p>
                 }
-                <InputGroup readOnly={ !this.writable } onChange={ this.setUrl } value={ this.urlText } intent={ this.error ? "danger" : null } />
+                <InputGroup readOnly={ !writable } onChange={ this.setUrl } value={ urlText } intent={ error ? "danger" : null } />
                 <div className={ "info-margin" } />
-                { this.writable ?
+                { writable ?
                     <div>
-                        <Button className="button-margin" intent="primary" disabled={ this.error } onClick={ this.saveChanges }>Save</Button>
+                        <Button className="button-margin" intent="primary" disabled={ error } onClick={ this.saveChanges }>Save</Button>
                         <Button className="button-margin" onClick={ this.cancelChanges }>Cancel</Button>
                     </div> : <Button onClick={ this.toggleReadability }>Edit</Button>
                 }
