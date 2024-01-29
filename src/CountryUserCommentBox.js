@@ -8,17 +8,16 @@ const validUrl1 = "http://";
 const validUrl2 = "https://";
 
 const CountryUserCommentBox = observer( class CountryUserCommentBox extends React.Component {
-    initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")))
-    commentText = this.initJson ? this.initJson.comment : "";
-    urlText = this.initJson ? this.initJson.url : "";
     writable = false;
     error = false;
 
     constructor(props) {
         super(props);
+        let initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get("country")))
+        this.commentText = initJson ? initJson.comment : "";
+        this.urlText = initJson ? initJson.url : "";
 
         makeObservable(this, {
-            initJson:observable,
             commentText:observable,
             urlText:observable,
             writable:observable,
