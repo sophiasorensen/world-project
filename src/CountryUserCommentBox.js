@@ -18,6 +18,9 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         super(props);
 
         makeObservable(this, {
+            initJson:observable,
+            commentText:observable,
+            urlText:observable,
             writable:observable,
             error:observable,
 
