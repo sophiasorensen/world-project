@@ -30,9 +30,7 @@ class SearchBar extends React.Component {
 
     render() {
         return (
-            <div>
-                <InputGroup className="bp5-align-right bp5-small" type="text" fill="false" onValueChange={ this.handleSearchQuery } />
-            </div>
+            <InputGroup className="bp5-align-right bp5-small" type="text" fill="false" onValueChange={ this.handleSearchQuery } />
         )
     }
 }
