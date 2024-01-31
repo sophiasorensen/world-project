@@ -16,7 +16,7 @@ function CountryDataRow({header, data}) {
     );
 }
 
-export default function CountryInfo({ searchParams, updateSearchParams }) {
+export default function CountryDialog({ searchParams, updateSearchParams }) {
     const country = searchParams.get(countryKey);
     const dialogEnabled = !!country;
     const variables = dialogEnabled ? { code: country } : {};
