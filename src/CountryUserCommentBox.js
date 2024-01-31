@@ -3,7 +3,7 @@ import { Button, H6, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import "./App.css";
-import {countryKey} from "./common";
+import { countryKey } from "./common";
 
 const validUrl1 = "http://";
 const validUrl2 = "https://";

@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 import { countryKey } from "./common";
 import "./App.css";
 import CountryInfo from "./CountryInfo";
+import CountryContacts from "./CountryContacts";
 
 const CountryDirectory = observer(class CountryDirectory extends React.Component{
     currentTab = "Info";
@@ -45,6 +46,7 @@ const CountryDirectory = observer(class CountryDirectory extends React.Component
                 </Tabs>
                 <TabsExpander />
                 {currentTab === "Info" && <CountryInfo searchParams={ searchParams } updateSearchParams={ updatedSearchParams } />}
+                {currentTab === "Contacts" && <CountryContacts />}
             </Dialog>
         );
     }
