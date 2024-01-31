@@ -11,8 +11,8 @@
 }
 
 .tab {
-    display: inline-block;
-    margin-left: 1em;
+    margin-left: 25px;
+    margin-top: 10px;
 }
 
 .header {

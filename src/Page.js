@@ -4,6 +4,7 @@ import React from "react";
 import CountryInfo from "./CountryInfo";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
+import CountryDirectory from "./CountryDirectory";
 
 export default function Page() {
     let [searchParams, setSearchParams] = useSearchParams(createSearchParams());
@@ -25,7 +26,7 @@ export default function Page() {
             <Header updateSearchParams={ updateSearchParams } />
             <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
             <CountryTable searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
-            <CountryInfo searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
+            <CountryDirectory searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
         </div>
     );
 }
