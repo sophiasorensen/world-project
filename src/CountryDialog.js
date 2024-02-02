@@ -1,54 +1,44 @@
 import * as React from "react";
 import { useQuery } from "@apollo/client";
 import { queryCountry } from "./queries";
-import { Dialog, DialogBody, Spinner, TextArea } from "@blueprintjs/core";
+import { Dialog, Spinner, Tab, Tabs, TabsExpander } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import "./App.css";
-import CountryUserCommentBox from "./CountryUserCommentBox";
 import { countryKey } from "./common";
-
-function CountryDataRow({header, data}) {
-    return (
-        <tr>
-            <th>{header}:</th>
-            <td>{data}</td>
-        </tr>
-    );
-}
+import CountryInfo from "./CountryInfo";
+import CountryContacts from "./CountryContacts";
 
 export default function CountryDialog({ searchParams, updateSearchParams }) {
     const country = searchParams.get(countryKey);
     const dialogEnabled = !!country;
     const variables = dialogEnabled ? { code: country } : {};
     const { data, loading, error } = useQuery(queryCountry, { variables, skip: !dialogEnabled });
+    let currentTab;
 
     function handleClose() {
-        updateSearchParams({ country: null });
+        updateSearchParams({ country: null, countryTab: null });
+    }
+
+    function setCountryTab(newTabId) {
+        updateSearchParams({ countryTab: newTabId });
+        currentTab = searchParams.get("countryTab");
+    }
+
+    function getCountryName() {
+        return data ? data?.country.emoji + " " + data?.country.name : null;
     }
 
     return (
-        <Dialog isOpen={ dialogEnabled } onClose={ handleClose } className="dialog-window">
-            <DialogBody>
-                { error && <ErrorPage error={ error } /> }
-                { loading && <Spinner className="dialog-window"/> }
-                { !error && !loading &&
-                    <table className="bp5-html-table bp5-compact">
-                        <thead>
-                            <tr>
-                                <th>
-                                    { data?.country.emoji }<span className="tab">{ data?.country.name }</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <CountryDataRow header="Continent" data={ data?.country.continent.name } />
-                            <CountryDataRow header="Capital" data={ data?.country.capital } />
-                            <CountryDataRow header="Currency" data={ data?.country.currency } />
-                            <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
-                        </tbody>
-                    </table> }
-                <CountryUserCommentBox searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
-            </DialogBody>
+        <Dialog isOpen={ dialogEnabled } onClose={ handleClose } className="dialog-window" title={ getCountryName() } >
+            { error && <ErrorPage error={ error } /> }
+            { loading && <Spinner className="dialog-window"/> }
+            { !error && !loading &&
+                <Tabs id="countryTab" defaultSelectedTabId="Info" selectedTabId={ currentTab } onChange={ setCountryTab } >
+                    <Tab id="Info" title="Info" panel={<CountryInfo data={ data } searchParams={ searchParams } updateSearchParams={ updateSearchParams } />}/>
+                    <Tab id="Contacts" title="Contacts" panel={<CountryContacts />} />
+                    <TabsExpander />
+                </Tabs>
+            }
         </Dialog>
     );
 }
