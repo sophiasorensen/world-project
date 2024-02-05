@@ -33,9 +33,9 @@ export default function CountryDialog({ searchParams, updateSearchParams }) {
             { error && <ErrorPage error={ error } /> }
             { loading && <Spinner className="dialog-window"/> }
             { !error && !loading &&
-                <Tabs id="countryTab" defaultSelectedTabId="Info" selectedTabId={ currentTab } onChange={ setCountryTab } >
+                <Tabs className="tab" id="countryTab" defaultSelectedTabId="Info" selectedTabId={ currentTab } onChange={ setCountryTab } >
                     <Tab id="Info" title="Info" panel={<CountryInfo data={ data } searchParams={ searchParams } updateSearchParams={ updateSearchParams } />}/>
-                    <Tab id="Contacts" title="Contacts" panel={<CountryContacts />} />
+                    <Tab id="Contacts" title="Contacts" panel={<CountryContacts searchParams={ searchParams } updateSearchParams={ updateSearchParams } />} />
                     <TabsExpander />
                 </Tabs>
             }
