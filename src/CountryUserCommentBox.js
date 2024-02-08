@@ -17,6 +17,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         let initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)))
         this.commentText = initJson?.comment ?? "";
         this.urlText = initJson?.url ?? "";
+        // this.contactList = initJson?.contactList ?? [];
 
         makeObservable(this, {
             commentText:observable,
@@ -65,13 +66,13 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         this.error = false;
 
         let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)));
+        console.log(parsed)
         this.commentText = parsed.comment;
         this.urlText = parsed.url;
     }
 
     render() {
         let {
-
             commentText,
             urlText,
             writable,

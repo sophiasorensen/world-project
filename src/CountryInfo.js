@@ -1,9 +1,5 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { action, makeObservable, observable } from "mobx";
-import { countryKey } from "./common";
-import { useQuery } from "@apollo/client";
-import { queryCountry } from "./queries";
 import CountryUserCommentBox from "./CountryUserCommentBox";
 import { DialogBody } from "@blueprintjs/core";
 
@@ -19,9 +15,6 @@ const CountryInfo = observer( class CountryInfo extends React.Component {
 
     constructor(props) {
         super(props);
-
-        makeObservable(this, {
-        })
     }
 
     render() {

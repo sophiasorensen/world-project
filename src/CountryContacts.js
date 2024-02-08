@@ -1,44 +1,49 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { Button, Card, DialogBody } from "@blueprintjs/core";
+import { Button, DialogBody } from "@blueprintjs/core";
 import { action, makeObservable } from "mobx";
 import { countryKey } from "./common";
+import Contacts from "./Contacts";
 
-// dict: { countryID: { contact1, contact2, ... contactN } }
 const CountryContacts = observer( class CountryContacts extends React.Component {
+
     constructor(props) {
         super(props);
+        this.countryCode = this.props.searchParams.get(countryKey);
+        this.localData = this.resolveLocalData(this.props.searchParams.get(countryKey))
+        this.contactList = this.localData.contactList;
 
         makeObservable(this, {
-            renderEachContact:action.bound,
+            createContact:action.bound,
         });
     }
 
-    renderEachContact() {
-        let countryCode = this.props.searchParams.get(countryKey);
-        return (
-            <Card interactive={ true }>
-                <table className="bp5-html-table bp5-compact">
-                    <thead>
-                    <th>Name</th>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>Info</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <Button>Edit</Button>
-                <Button>Delete</Button>
-            </Card>
-        );
+    resolveLocalData(key) {
+        let localData = localStorage.getItem(key)
+        if (!localData) return( { contactList: [] } )
+        console.log(localData)
+        return JSON.parse(localData)
+    }
+
+    createContact() {
+        // add contact to list
+        let { localData, contactList, countryCode } = this;
+        contactList.push({ name:"", email:"", comment:"", editable:true })
+        console.log(contactList)
+        localData.contactList = contactList;
+        localStorage.setItem(countryCode, JSON.stringify(localData))
     }
 
     render() {
+        let {
+            contactList,
+            createContact
+        } = this;
+
         return (
             <DialogBody>
-                { this.renderEachContact() }
-                <Button intent="success">+Create new contact</Button>
+                { contactList.map( p => <Contacts name={ p.name } email={ p.email } comment={ p.comment } editable={ false } />)}
+                <Button intent="success" onClick={ createContact }>+Create new contact</Button>
             </DialogBody>
         );
     }

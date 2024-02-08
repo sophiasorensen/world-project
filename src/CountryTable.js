@@ -9,7 +9,8 @@ import { continentKey, worldCode } from "./common";
 
 
 const CountryRow = ({ updateSearchParams, country }) => {
-    let localCountryData = JSON.parse(localStorage.getItem(country.code))
+    let localData = localStorage.getItem(country.code)
+    let localCountryData = JSON.parse(localData)
     let localURL = localCountryData ? localCountryData.url : ""
     function handleClick()  {
         updateSearchParams({ country: country.code })
