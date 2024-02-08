@@ -42,7 +42,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
         return (
             <DialogBody>
-                { contactList.map( p => <Contacts name={ p.name } email={ p.email } comment={ p.comment } editable={ false } />)}
+                { contactList.map( p => <Contacts key="{p}" name={ p.name } email={ p.email } comment={ p.comment } editable={ false } />)}
                 <Button intent="success" onClick={ createContact }>+Create new contact</Button>
             </DialogBody>
         );

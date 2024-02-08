@@ -6,6 +6,10 @@ import { Button, Card } from "@blueprintjs/core";
 const Contacts = observer( class Contacts extends React.Component {
     constructor(props) {
         super(props);
+        this.name = this.props.name;
+        this.email = this.props.email;
+        this.comment = this.props.comment;
+        this.editable = this.props.editable;
 
         makeObservable(this, {
 
@@ -24,12 +28,14 @@ const Contacts = observer( class Contacts extends React.Component {
             <Card interactive={ true }>
                 <table className="bp5-html-table bp5-compact">
                     <thead>
-                    <th>Name</th>
+                        <tr>
+                            <th>Name</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>Info</td>
-                    </tr>
+                        <tr>
+                            <td>Info</td>
+                        </tr>
                     </tbody>
                 </table>
                 <Button>Edit</Button>
