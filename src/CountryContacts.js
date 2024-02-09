@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react";
 import { Button, DialogBody } from "@blueprintjs/core";
-import { action, makeObservable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { countryKey } from "./common";
 import Contacts from "./Contacts";
 
@@ -14,6 +14,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
         this.contactList = this.localData.contactList;
 
         makeObservable(this, {
+            contactList: observable,
             createContact:action.bound,
         });
     }
@@ -42,8 +43,8 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
         return (
             <DialogBody>
-                { contactList.map( p => <Contacts key="{p}" name={ p.name } email={ p.email } comment={ p.comment } editable={ false } />)}
-                <Button intent="success" onClick={ createContact }>+Create new contact</Button>
+                { contactList.map( p => <Contacts key={p} name={ p.name } email={ p.email } comment={ p.comment } editable={ p.editable } />)}
+                <Button className="dialog-button" intent="success" onClick={ createContact }>+Create new contact</Button>
             </DialogBody>
         );
     }
