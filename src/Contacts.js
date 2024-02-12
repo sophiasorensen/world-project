@@ -5,6 +5,10 @@ import { Button, Card, InputGroup } from "@blueprintjs/core";
 
 const Contacts = observer( class Contacts extends React.Component {
     error = false;
+    prevName = "";
+    prevEmail = "";
+    prevComment = "";
+
     constructor(props) {
         super(props);
         this.name = this.props.name;
@@ -14,19 +18,29 @@ const Contacts = observer( class Contacts extends React.Component {
 
         makeObservable(this, {
             error:observable,
+            prevName:observable,
+            prevEmail:observable,
+            prevComment:observable,
             name:observable,
             email: observable,
             comment:observable,
             editable:observable,
 
+            makeEditable:action.bound,
             updateName:action.bound,
             updateEmail:action.bound,
+            updateComment:action.bound,
             saveChanges:action.bound,
+            cancelChanges:action.bound,
         });
     }
 
-    updateName(inputName) {
-        this.name = inputName;
+    makeEditable() {
+        this.editable = true;
+    }
+
+    updateName(event) {
+        this.name = event.target.value;
     }
 
     updateEmail(event) {
@@ -39,17 +53,29 @@ const Contacts = observer( class Contacts extends React.Component {
         } else { this.error = false; }
     }
 
-    saveChanges() {
-        this.editable = false;
+    updateComment(event) {
+        this.comment = event.target.value;
     }
 
+    saveChanges() {
+        this.editable = false;
+        // this.props.name = this.name;
+        // this.props.email = this.email;
+        // this.props.comment = this.comment;
+    }
 
+    cancelChanges() {
+        let {
+            prevName,
+            prevEmail,
+            prevComment
+        } = this;
+        this.editable = false;
 
-    // onEdit make writable
-
-    // onSave save fields
-    // if fields are empty, delete self?
-
+        this.name = prevName;
+        this.email = prevEmail;
+        this.comment = prevComment;
+    }
 
     render() {
         let {
@@ -58,68 +84,59 @@ const Contacts = observer( class Contacts extends React.Component {
             email,
             comment,
             editable,
+            makeEditable,
             updateName,
             updateEmail,
-            saveChanges
+            updateComment,
+            saveChanges,
+            cancelChanges
         } = this;
+
         console.log(error)
 
         return(
             <Card interactive={ true }>
-                <table className="bp5-html-table bp5-compact">
-                    <colgroup span="2"></colgroup>
-                    <thead>
-                        <tr>
-                            { editable ?
-                                <th colSpan="2" scope="colgroup">
-                                    <InputGroup onChange={ updateName } placeholder="Name" />
-                                </th> :
-                                <th colSpan="2" scope="colgroup">
-                                    { name }
-                                </th>}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            { error && <p className={ "error-text" }>
-                                Email addresses must include @
-                            </p> }
-                            Email: { editable ?
-                            <td>
-                                <InputGroup
-                                    onChange={ updateEmail }
-                                    placeholder="Enter a valid email address"
-                                    value={ email }
-                                    intent={error ? "danger" : null} />
-                            </td> :
-                            <td>
-                                <div>{ email }</div>
-                            </td> }
-                        </tr>
-                        <tr>
-                            Comment: { editable ?
-                            <td>
-                                <InputGroup onChange={ updateName } placeholder="Comment"></InputGroup>
-                            </td> :
-                            <td>
-                                { comment }
-                            </td> }
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    { editable ?
+                        <InputGroup onChange={ updateName } value={ name } placeholder="Name" />
+                        :
+                        <p>{ name }</p>
+                    }
+                </div>
+                { error &&
+                    <p className={ "error-text" }>
+                        Email addresses must include @
+                    </p>
+                }
+
+                <div>Email: { editable ?
+                    <InputGroup
+                        onChange={ updateEmail }
+                        placeholder="Enter a valid email address"
+                        value={ email }
+                        intent={error ? "danger" : null} />
+                    :
+                    <p>{ email }</p>
+                }</div>
+
+                <div>Comment: { editable ?
+                    <InputGroup onChange={ updateComment } placeholder="Comment" value={ comment }></InputGroup>
+                    :
+                    <p>{ comment }</p>
+                }</div>
+
                 <div align={"right"}>
                     { editable ?
                         <div align="right">
-                            <Button className="card-button">Cancel</Button>
-                            <Button className="card-button" intent="primary" onClick={ saveChanges }>Save</Button>
+                            <Button className="card-button" onClick={ cancelChanges }>Cancel</Button>
+                            <Button className="card-button" intent="primary" onClick={ saveChanges } disabled={ error }>Save</Button>
                         </div>
                          :
                         <div align="right">
-                            <Button className="card-button">Edit</Button>
+                            <Button className="card-button" onClick={ makeEditable }>Edit</Button>
                             <Button className="card-button" intent="error">Delete</Button>
                         </div>
                     }
-
                 </div>
             </Card>
         );
