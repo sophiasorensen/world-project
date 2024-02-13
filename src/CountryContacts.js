@@ -27,7 +27,6 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        // add contact to list
         let { localData, contactList, countryCode } = this;
         contactList.push({ name:"", email:"", comment:"", editable:true })
         console.log(contactList)
@@ -43,7 +42,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
         return (
             <DialogBody>
-                { contactList.map( p => <Contacts key={p} name={ p.name } email={ p.email } comment={ p.comment } editable={ p.editable } />)}
+                { contactList.map( p => <Contacts key={p} localData={p} name={ p.name } email={ p.email } comment={ p.comment } editable={ p.editable } searchParams={ this.props.searchParams } />)}
                 <Button className="dialog-button" intent="success" onClick={ createContact }>+Create new contact</Button>
             </DialogBody>
         );

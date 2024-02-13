@@ -2,6 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
+import { countryKey } from "./common";
 
 const Contacts = observer( class Contacts extends React.Component {
     error = false;
@@ -11,16 +12,25 @@ const Contacts = observer( class Contacts extends React.Component {
 
     constructor(props) {
         super(props);
-        this.name = this.props.name;
-        this.email = this.props.email;
-        this.comment = this.props.comment;
-        this.editable = this.props.editable;
+        this.countryCode = this.props.searchParams.get(countryKey);
+        this.localData = this.props.localData;
+        this.name = this.localData.name;
+        this.email = this.localData.email;
+        this.comment = this.localData.comment;
+        this.editable = this.localData.editable;
+
+        // this.name = this.props.name;
+        // this.email = this.props.email;
+        // this.comment = this.props.comment;
+        // this.editable = this.props.editable;
 
         makeObservable(this, {
+            localData:observable,
+            countryCode:observable,
             error:observable,
-            prevName:observable,
-            prevEmail:observable,
-            prevComment:observable,
+            // prevName:observable,
+            // prevEmail:observable,
+            // prevComment:observable,
             name:observable,
             email: observable,
             comment:observable,
@@ -59,9 +69,10 @@ const Contacts = observer( class Contacts extends React.Component {
 
     saveChanges() {
         this.editable = false;
-        // this.props.name = this.name;
-        // this.props.email = this.email;
-        // this.props.comment = this.comment;
+        this.localData.name = this.name;
+        this.localData.email = this.email;
+        this.localData.comment = this.comment;
+        localStorage.setItem(this.countryCode, JSON.stringify({ localData: this.localData }));
     }
 
     cancelChanges() {
@@ -71,10 +82,13 @@ const Contacts = observer( class Contacts extends React.Component {
             prevComment
         } = this;
         this.editable = false;
+        this.name = this.localData.name;
+        this.email = this.localData.email;
+        this.comment = this.localData.comment;
 
-        this.name = prevName;
-        this.email = prevEmail;
-        this.comment = prevComment;
+        // this.name = prevName;
+        // this.email = prevEmail;
+        // this.comment = prevComment;
     }
 
     render() {
