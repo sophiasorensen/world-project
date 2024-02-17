@@ -3,6 +3,7 @@ import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { countryKey } from "./common";
+import { getLocalData, setLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
     error = false;
@@ -13,28 +14,23 @@ const Contacts = observer( class Contacts extends React.Component {
     constructor(props) {
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
-        this.localData = this.props.localData;
-        this.name = this.localData.name;
-        this.email = this.localData.email;
-        this.comment = this.localData.comment;
-        this.editable = this.localData.editable;
-
-        // this.name = this.props.name;
-        // this.email = this.props.email;
-        // this.comment = this.props.comment;
-        // this.editable = this.props.editable;
+        this.localData = getLocalData(this.countryCode)
+        this.contactList = this.localData?.contactList ?? [];
+        this.currentContact = this.props.currentContact;
+        this.index = this.localData.index;
+        // this.name = this.currentContact.name;
+        // this.email = this.currentContact.email;
+        // this.comment = this.currentContact.comment;
+        // this.editable = this.currentContact.editable;
 
         makeObservable(this, {
-            localData:observable,
+            currentContact:observable,
             countryCode:observable,
             error:observable,
-            // prevName:observable,
-            // prevEmail:observable,
-            // prevComment:observable,
-            name:observable,
-            email: observable,
-            comment:observable,
-            editable:observable,
+            // name:observable,
+            // email: observable,
+            // comment:observable,
+            // editable:observable,
 
             makeEditable:action.bound,
             updateName:action.bound,
@@ -46,58 +42,49 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     makeEditable() {
-        this.editable = true;
+        this.currentContact.editable = true;
     }
 
     updateName(event) {
-        this.name = event.target.value;
+        this.currentContact.name = event.target.value;
     }
 
     updateEmail(event) {
-        this.email = event.target.value;
+        this.currentContact.email = event.target.value;
 
-        let { email } = this;
+        // let { email } = this;
 
-        if (!email.includes('@')) {
+        if (!this.currentContact.email.includes('@')) {
             this.error = true;
         } else { this.error = false; }
     }
 
     updateComment(event) {
-        this.comment = event.target.value;
+        this.currentContact.comment = event.target.value;
     }
 
     saveChanges() {
-        this.editable = false;
-        this.localData.name = this.name;
-        this.localData.email = this.email;
-        this.localData.comment = this.comment;
-        localStorage.setItem(this.countryCode, JSON.stringify({ localData: this.localData }));
+        this.currentContact.editable = false;
+        this.currentContact.name = this.name;
+        this.currentContact.email = this.email;
+        this.currentContact.comment = this.comment;
+
+        //this.contactList[this.index]
+        setLocalData(this.countryCode, )
+        localStorage.setItem(this.countryCode, JSON.stringify(this.currentContact));
     }
 
     cancelChanges() {
-        let {
-            prevName,
-            prevEmail,
-            prevComment
-        } = this;
         this.editable = false;
-        this.name = this.localData.name;
-        this.email = this.localData.email;
-        this.comment = this.localData.comment;
-
-        // this.name = prevName;
-        // this.email = prevEmail;
-        // this.comment = prevComment;
+        this.name = this.currentContact.name;
+        this.email = this.currentContact.email;
+        this.comment = this.currentContact.comment;
     }
 
     render() {
         let {
             error,
-            name,
-            email,
-            comment,
-            editable,
+            currentContact,
             makeEditable,
             updateName,
             updateEmail,
@@ -111,10 +98,10 @@ const Contacts = observer( class Contacts extends React.Component {
         return(
             <Card interactive={ true }>
                 <div>
-                    { editable ?
-                        <InputGroup onChange={ updateName } value={ name } placeholder="Name" />
+                    { currentContact.editable ?
+                        <InputGroup onChange={ updateName } value={ currentContact.name } placeholder="Name" />
                         :
-                        <p>{ name }</p>
+                        <p>{ currentContact.name }</p>
                     }
                 </div>
                 { error &&
@@ -123,24 +110,24 @@ const Contacts = observer( class Contacts extends React.Component {
                     </p>
                 }
 
-                <div>Email: { editable ?
+                <div>Email: { currentContact.editable ?
                     <InputGroup
                         onChange={ updateEmail }
                         placeholder="Enter a valid email address"
-                        value={ email }
-                        intent={error ? "danger" : null} />
+                        value={ currentContact.email }
+                        intent={ error ? "danger" : null} />
                     :
-                    <p>{ email }</p>
+                    <p>{ currentContact.email }</p>
                 }</div>
 
-                <div>Comment: { editable ?
-                    <InputGroup onChange={ updateComment } placeholder="Comment" value={ comment }></InputGroup>
+                <div>Comment: { currentContact.editable ?
+                    <InputGroup onChange={ updateComment } placeholder="Comment" value={ currentContact.comment }></InputGroup>
                     :
-                    <p>{ comment }</p>
+                    <p>{ currentContact.comment }</p>
                 }</div>
 
                 <div align={"right"}>
-                    { editable ?
+                    { currentContact.editable ?
                         <div align="right">
                             <Button className="card-button" onClick={ cancelChanges }>Cancel</Button>
                             <Button className="card-button" intent="primary" onClick={ saveChanges } disabled={ error }>Save</Button>
