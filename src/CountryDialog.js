@@ -13,7 +13,7 @@ export default function CountryDialog({ searchParams, updateSearchParams }) {
     const dialogEnabled = !!country;
     const variables = dialogEnabled ? { code: country } : {};
     const { data, loading, error } = useQuery(queryCountry, { variables, skip: !dialogEnabled });
-    let currentTab;
+    let currentTab = searchParams.get("countryTab") ?? "Info";
 
     function handleClose() {
         updateSearchParams({ country: null, countryTab: null });

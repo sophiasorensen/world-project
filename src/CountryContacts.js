@@ -23,11 +23,18 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let { localData, contactList, countryCode } = this;
+        let { localData } = this;
+        if (!localData) {
+            setLocalData(this.countryCode);
+        }
+        this.props.updateSearchParams({ editingContact: localData.index + 1 })
 
-        contactList.push({ name:"", email:"", comment:"", editable:true })
-        localData.contactList = contactList;
-        setLocalData(countryCode, localData);
+        return <Contacts
+            key={ localData.index + 1 }
+
+            searchParams={ this.props.searchParams } // make editable=id? and push to searchParams
+            updateSearchParams={this.props.updateSearchParams}
+        />
     }
 
     render() {
@@ -39,7 +46,21 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
         return (
             <DialogBody>
-                <div>{ contactList.map( (currentContact) => <Contacts key={ localData.index } currentContact={ currentContact } searchParams={ this.props.searchParams } />)}</div>
+                <div>{ contactList.map( (currentContact) =>
+                    <Contacts
+                        key={ localData.index }
+                        currentContact={ currentContact }
+                        searchParams={ this.props.searchParams }
+                        updateSearchParams={ this.props.updateSearchParams }
+                    />)}
+                </div>
+                { this.props.searchParams.editingContact ??
+                    <Contacts
+                        key={ localData.index + 1 }
+                        searchParams={ this.props.searchParams }
+                        updateSearchParams={this.props.updateSearchParams}
+                    />
+                }
                 <Button className="dialog-button" intent="success" onClick={ createContact }>+Create new contact</Button>
             </DialogBody>
         );

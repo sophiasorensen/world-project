@@ -1,22 +1,38 @@
-function setLocalData(country, { comment, url, contactList } = {}) {
+function setLocalData(country, { comment, url, contactList, index } = {}) {
     if (!country) {
         console.log("No country, cannot set local data");
         return null;
     }
-    let prevData = getLocalData(country)
-    let index = prevData.index ?? 0;
 
     let countryData = {
         comment: comment ?? "",
         url: url ?? "",
         contactList: contactList ?? [],
-        index: index,
+        index: index ?? 0,
     }
     localStorage.setItem(country, JSON.stringify(countryData))
 
 }
 
-
+function addContact(country, { name, email, comment, index} = {}) {
+    let currData = getLocalData(country);
+    let contactList = currData.contactList;
+    if (index > currData.index) {
+        contactList.push({ name: name, email: email, comment: comment, index: index })
+    } else {
+        contactList = contactList.map( contact => {
+            if (contact.index === index) {
+                return { name: name, email: email, comment: comment, index: index }
+            }
+        })
+    }
+    setLocalData(country, {
+        comment: currData.comment,
+        url: currData.url,
+        contactList: contactList,
+        index: index + 1
+    })
+}
 
 function getLocalData(key) {
     let localData = localStorage.getItem(key)
@@ -24,4 +40,4 @@ function getLocalData(key) {
     return JSON.parse(localData);
 }
 
-export { setLocalData, getLocalData }
+export { setLocalData, addContact, getLocalData }

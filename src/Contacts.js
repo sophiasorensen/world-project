@@ -3,34 +3,29 @@ import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { countryKey } from "./common";
-import { getLocalData, setLocalData } from "./localCrud";
+import { addContact, getLocalData, setLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
     error = false;
-    prevName = "";
-    prevEmail = "";
-    prevComment = "";
 
     constructor(props) {
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
         this.localData = getLocalData(this.countryCode)
         this.contactList = this.localData?.contactList ?? [];
-        this.currentContact = this.props.currentContact;
-        this.index = this.localData.index;
-        // this.name = this.currentContact.name;
-        // this.email = this.currentContact.email;
-        // this.comment = this.currentContact.comment;
-        // this.editable = this.currentContact.editable;
+        this.currentContact = this.props.currentContact ??
+            { name: "",
+            email: "",
+            comment: "",
+            index: this.localData.index + 1 };
+        this.editable = this.currentContact.index === this.props.searchParams.editingContact
+
 
         makeObservable(this, {
             currentContact:observable,
             countryCode:observable,
             error:observable,
-            // name:observable,
-            // email: observable,
-            // comment:observable,
-            // editable:observable,
+            editable:observable,
 
             makeEditable:action.bound,
             updateName:action.bound,
@@ -42,7 +37,8 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     makeEditable() {
-        this.currentContact.editable = true;
+        this.props.updateSearchParams({ editingContact: this.currentContact.index })
+        this.editable = true;
     }
 
     updateName(event) {
@@ -51,8 +47,6 @@ const Contacts = observer( class Contacts extends React.Component {
 
     updateEmail(event) {
         this.currentContact.email = event.target.value;
-
-        // let { email } = this;
 
         if (!this.currentContact.email.includes('@')) {
             this.error = true;
@@ -64,26 +58,22 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     saveChanges() {
-        this.currentContact.editable = false;
-        this.currentContact.name = this.name;
-        this.currentContact.email = this.email;
-        this.currentContact.comment = this.comment;
-
-        //this.contactList[this.index]
-        setLocalData(this.countryCode, )
-        localStorage.setItem(this.countryCode, JSON.stringify(this.currentContact));
+        this.props.updateSearchParams({ editingContact: null })
+        addContact(this.countryCode, this.currentContact)
     }
 
     cancelChanges() {
-        this.editable = false;
-        this.name = this.currentContact.name;
-        this.email = this.currentContact.email;
-        this.comment = this.currentContact.comment;
+        this.props.updateSearchParams({ editingContact: null })
+        let storedContact = this.localData.contactList.find(contact => contact.index === this.currentContact.index);
+        this.currentContact.name = storedContact.name;
+        this.currentContact.email = storedContact.email;
+        this.currentContact.comment = storedContact.comment;
     }
 
     render() {
         let {
             error,
+            editable,
             currentContact,
             makeEditable,
             updateName,
@@ -98,7 +88,7 @@ const Contacts = observer( class Contacts extends React.Component {
         return(
             <Card interactive={ true }>
                 <div>
-                    { currentContact.editable ?
+                    { editable ?
                         <InputGroup onChange={ updateName } value={ currentContact.name } placeholder="Name" />
                         :
                         <p>{ currentContact.name }</p>
@@ -110,7 +100,7 @@ const Contacts = observer( class Contacts extends React.Component {
                     </p>
                 }
 
-                <div>Email: { currentContact.editable ?
+                <div>Email: { editable ?
                     <InputGroup
                         onChange={ updateEmail }
                         placeholder="Enter a valid email address"
@@ -120,14 +110,14 @@ const Contacts = observer( class Contacts extends React.Component {
                     <p>{ currentContact.email }</p>
                 }</div>
 
-                <div>Comment: { currentContact.editable ?
+                <div>Comment: { editable ?
                     <InputGroup onChange={ updateComment } placeholder="Comment" value={ currentContact.comment }></InputGroup>
                     :
                     <p>{ currentContact.comment }</p>
                 }</div>
 
                 <div align={"right"}>
-                    { currentContact.editable ?
+                    { editable ?
                         <div align="right">
                             <Button className="card-button" onClick={ cancelChanges }>Cancel</Button>
                             <Button className="card-button" intent="primary" onClick={ saveChanges } disabled={ error }>Save</Button>
