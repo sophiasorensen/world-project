@@ -34,10 +34,22 @@ function addContact(country, { name, email, comment, index} = {}) {
     })
 }
 
+function deleteContact(country, index) {
+    let currData = getLocalData(country);
+    let contactList = currData.contactList;
+    if (index < currData.index) {
+        contactList.splice(index, 1)
+    }
+    setLocalData(country, { ...currData, contactList: contactList, index: currData.index - 1 })
+}
+
 function getLocalData(key) {
     let localData = localStorage.getItem(key)
-    if (!localData) return null;
+    if (!localData) {
+        setLocalData(key);
+        localData = localStorage.getItem(key);
+    }
     return JSON.parse(localData);
 }
 
-export { setLocalData, addContact, getLocalData }
+export { setLocalData, addContact, deleteContact, getLocalData }

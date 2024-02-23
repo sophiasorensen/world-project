@@ -3,7 +3,7 @@ import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { countryKey } from "./common";
-import { addContact, getLocalData, setLocalData } from "./localCrud";
+import { addContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
     error = false;
@@ -33,6 +33,7 @@ const Contacts = observer( class Contacts extends React.Component {
             updateComment:action.bound,
             saveChanges:action.bound,
             cancelChanges:action.bound,
+            deleteContact:action.bound,
         });
     }
 
@@ -64,10 +65,18 @@ const Contacts = observer( class Contacts extends React.Component {
 
     cancelChanges() {
         this.props.updateSearchParams({ editingContact: null })
+        if (this.currentContact.index > this.localData.index) {
+            this.currentContact = null;
+            return;
+        }
         let storedContact = this.localData.contactList.find(contact => contact.index === this.currentContact.index);
         this.currentContact.name = storedContact.name;
         this.currentContact.email = storedContact.email;
         this.currentContact.comment = storedContact.comment;
+    }
+
+    deleteContact() {
+        deleteContact(this.countryCode, this.currentContact.index);
     }
 
     render() {
@@ -80,7 +89,8 @@ const Contacts = observer( class Contacts extends React.Component {
             updateEmail,
             updateComment,
             saveChanges,
-            cancelChanges
+            cancelChanges,
+            deleteContact
         } = this;
 
         console.log(error)
@@ -125,7 +135,7 @@ const Contacts = observer( class Contacts extends React.Component {
                          :
                         <div align="right">
                             <Button className="card-button" onClick={ makeEditable }>Edit</Button>
-                            <Button className="card-button" intent="error">Delete</Button>
+                            <Button className="card-button" intent="danger" onClick={ deleteContact }>Delete</Button>
                         </div>
                     }
                 </div>
