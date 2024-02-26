@@ -2,7 +2,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
-import { countryKey } from "./common";
+import { contactKey, countryKey } from "./common";
 import { addContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
@@ -18,7 +18,11 @@ const Contacts = observer( class Contacts extends React.Component {
             email: "",
             comment: "",
             index: this.localData.index + 1 };
-        this.editable = this.currentContact.index === this.props.searchParams.editingContact
+        console.log("contact in edit mode:" + this.props.searchParams.get(contactKey))
+        console.log("size of contact list: " + this.contactList.length)
+        console.log("last index in list: " + this.localData.index)
+        console.log("currentContact index === searchParams index --> " + (this.currentContact.index === this.props.searchParams.get(contactKey)))
+        this.editable = this.currentContact.index === this.props.searchParams.get(contactKey)
 
 
         makeObservable(this, {
@@ -59,11 +63,13 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     saveChanges() {
+        this.editable = false;
         this.props.updateSearchParams({ editingContact: null })
         addContact(this.countryCode, this.currentContact)
     }
 
     cancelChanges() {
+        this.editable = false;
         this.props.updateSearchParams({ editingContact: null })
         if (this.currentContact.index > this.localData.index) {
             this.currentContact = null;

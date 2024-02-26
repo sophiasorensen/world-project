@@ -36,8 +36,11 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
         let {
             localData,
             contactList,
-            createContact
+            createContact,
+            editableContact
         } = this;
+
+        console.log("passing contact to edit, index: " + editableContact.index)
 
         return (
             <DialogBody>
@@ -49,7 +52,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
                         updateSearchParams={ this.props.updateSearchParams }
                     />)}
                 </div>
-                { this.editableContact.index ?
+                { editableContact.index ?
                     <Contacts
                         key={ localData.index + 1 }
                         currentContact={ this.editableContact }
