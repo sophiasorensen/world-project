@@ -12,11 +12,9 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
         this.localData = getLocalData(this.countryCode) ?? setLocalData(this.countryCode);
-        this.contactList = this.localData?.contactList ?? [];
 
         makeObservable(this, {
             localData: observable,
-            contactList: observable,
             editableContact:observable,
 
             createContact:action.bound,
@@ -35,16 +33,15 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     render() {
         let {
             localData,
-            contactList,
-            createContact,
-            editableContact
+            editableContact,
+            createContact
         } = this;
 
         console.log("passing contact to edit, index: " + editableContact.index)
 
         return (
             <DialogBody>
-                <div>{ contactList.map( (currentContact) =>
+                <div>{ localData.contactList.map( (currentContact) =>
                     <Contacts
                         key={ localData.index }
                         currentContact={ currentContact }

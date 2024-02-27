@@ -16,10 +16,14 @@ function setLocalData(country, { comment, url, contactList, index } = {}) {
 
 function addContact(country, { name, email, comment, index} = {}) {
     let currData = getLocalData(country);
+    console.log("before adding contact: ")
+    console.log(currData)
     let contactList = currData.contactList;
     if (index > currData.index) {
+        console.log("Adding contact " + name)
         contactList.push({ name: name, email: email, comment: comment, index: index })
     } else {
+        console.log("Updating contact at index " + index)
         contactList = contactList.map( contact => {
             if (contact.index === index) {
                 return { name: name, email: email, comment: comment, index: index }
@@ -32,6 +36,7 @@ function addContact(country, { name, email, comment, index} = {}) {
         contactList: contactList,
         index: index + 1
     })
+    console.log(getLocalData(country))
 }
 
 function deleteContact(country, index) {
@@ -49,6 +54,7 @@ function getLocalData(key) {
         setLocalData(key);
         localData = localStorage.getItem(key);
     }
+    console.log(localData)
     return JSON.parse(localData);
 }
 

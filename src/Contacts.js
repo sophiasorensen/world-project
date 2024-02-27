@@ -12,17 +12,18 @@ const Contacts = observer( class Contacts extends React.Component {
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
         this.localData = getLocalData(this.countryCode)
-        this.contactList = this.localData?.contactList ?? [];
+        console.log("initializing local Data")
+        console.log(this.localData)
         this.currentContact = this.props.currentContact ??
             { name: "",
             email: "",
             comment: "",
             index: this.localData.index + 1 };
         console.log("contact in edit mode:" + this.props.searchParams.get(contactKey))
-        console.log("size of contact list: " + this.contactList.length)
+        console.log("size of contact list: " + this.localData.contactList.length)
         console.log("last index in list: " + this.localData.index)
-        console.log("currentContact index === searchParams index --> " + (this.currentContact.index === this.props.searchParams.get(contactKey)))
-        this.editable = this.currentContact.index === this.props.searchParams.get(contactKey)
+        console.log("currentContact index == searchParams index --> " + (this.currentContact.index == this.props.searchParams.get(contactKey)))
+        this.editable = this.currentContact.index == this.props.searchParams.get(contactKey)
 
 
         makeObservable(this, {
@@ -30,6 +31,7 @@ const Contacts = observer( class Contacts extends React.Component {
             countryCode:observable,
             error:observable,
             editable:observable,
+            localData:observable,
 
             makeEditable:action.bound,
             updateName:action.bound,
@@ -64,8 +66,10 @@ const Contacts = observer( class Contacts extends React.Component {
 
     saveChanges() {
         this.editable = false;
-        this.props.updateSearchParams({ editingContact: null })
         addContact(this.countryCode, this.currentContact)
+        this.localData = getLocalData(this.countryCode)
+        this.props.updateSearchParams({ editingContact: null })
+        console.log(this.localData)
     }
 
     cancelChanges() {
