@@ -3,7 +3,7 @@ import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { contactKey, countryKey } from "./common";
-import { addContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
+import { addOrUpdateContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
     error = false;
@@ -12,22 +12,18 @@ const Contacts = observer( class Contacts extends React.Component {
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
         this.localData = getLocalData(this.countryCode)
-        console.log("initializing local Data")
-        console.log(this.localData)
+        this.contacts = this.localData.contacts ?? {}
         this.currentContact = this.props.currentContact ??
             { name: "",
             email: "",
-            comment: "",
-            index: this.localData.index + 1 };
-        console.log("contact in edit mode:" + this.props.searchParams.get(contactKey))
-        console.log("size of contact list: " + this.localData.contactList.length)
-        console.log("last index in list: " + this.localData.index)
-        console.log("currentContact index == searchParams index --> " + (this.currentContact.index == this.props.searchParams.get(contactKey)))
-        this.editable = this.currentContact.index == this.props.searchParams.get(contactKey)
+            comment: "" };
+        console.log(this.props.index)
+        this.editable = this.props.index == this.props.searchParams.get(contactKey)
 
 
         makeObservable(this, {
             currentContact:observable,
+            contacts:observable,
             countryCode:observable,
             error:observable,
             editable:observable,
@@ -49,10 +45,12 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     updateName(event) {
+        console.log("name: " + event.target.value);
         this.currentContact.name = event.target.value;
     }
 
     updateEmail(event) {
+        console.log("email: " + event.target.value);
         this.currentContact.email = event.target.value;
 
         if (!this.currentContact.email.includes('@')) {
@@ -61,12 +59,13 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     updateComment(event) {
+        console.log("comment: " + event.target.value);
         this.currentContact.comment = event.target.value;
     }
 
     saveChanges() {
         this.editable = false;
-        addContact(this.countryCode, this.currentContact)
+        addOrUpdateContact(this.countryCode, this.currentContact)
         this.localData = getLocalData(this.countryCode)
         this.props.updateSearchParams({ editingContact: null })
         console.log(this.localData)
@@ -75,14 +74,13 @@ const Contacts = observer( class Contacts extends React.Component {
     cancelChanges() {
         this.editable = false;
         this.props.updateSearchParams({ editingContact: null })
-        if (this.currentContact.index > this.localData.index) {
+        if (this.props.index > this.localData.index) {
             this.currentContact = null;
             return;
         }
-        let storedContact = this.localData.contactList.find(contact => contact.index === this.currentContact.index);
-        this.currentContact.name = storedContact.name;
-        this.currentContact.email = storedContact.email;
-        this.currentContact.comment = storedContact.comment;
+        this.currentContact.name = this.contacts[this.props.index].name;
+        this.currentContact.email = this.contacts[this.props.index].email;
+        this.currentContact.comment = this.contacts[this.props.index].comment;
     }
 
     deleteContact() {
@@ -102,8 +100,6 @@ const Contacts = observer( class Contacts extends React.Component {
             cancelChanges,
             deleteContact
         } = this;
-
-        console.log(error)
 
         return(
             <Card interactive={ true }>

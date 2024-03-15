@@ -1,4 +1,4 @@
-function setLocalData(country, { comment, url, contactList, index } = {}) {
+function setLocalData(country, { comment, url, contacts, index } = {}) {
     if (!country) {
         console.log("No country, cannot set local data");
         return null;
@@ -7,55 +7,49 @@ function setLocalData(country, { comment, url, contactList, index } = {}) {
     let countryData = {
         comment: comment ?? "",
         url: url ?? "",
-        contactList: contactList ?? [],
+        contacts: contacts ?? {},
         index: index ?? 0,
     }
     localStorage.setItem(country, JSON.stringify(countryData))
 
 }
 
-function addContact(country, { name, email, comment, index} = {}) {
-    let currData = getLocalData(country);
+function addOrUpdateContact(countryKey, id, contact) {
+    let currData = getLocalData(countryKey);
     console.log("before adding contact: ")
-    console.log(currData)
-    let contactList = currData.contactList;
-    if (index > currData.index) {
-        console.log("Adding contact " + name)
-        contactList.push({ name: name, email: email, comment: comment, index: index })
-    } else {
-        console.log("Updating contact at index " + index)
-        contactList = contactList.map( contact => {
-            if (contact.index === index) {
-                return { name: name, email: email, comment: comment, index: index }
-            }
-        })
-    }
-    setLocalData(country, {
+    console.log(currData.contacts)
+    let contacts = currData.contacts;
+    let name = contact.name
+    console.log("saving name: " + name)
+    let email = contact.email
+    console.log("saving email: " + email)
+    let comment = contact.comment
+    console.log("saving comment: " + comment)
+    contacts[id] = { name, email, comment };
+
+    setLocalData(countryKey, {
         comment: currData.comment,
         url: currData.url,
-        contactList: contactList,
-        index: index + 1
+        contacts: contacts
     })
-    console.log(getLocalData(country))
+    console.log(getLocalData(countryKey))
 }
 
-function deleteContact(country, index) {
-    let currData = getLocalData(country);
-    let contactList = currData.contactList;
-    if (index < currData.index) {
-        contactList.splice(index, 1)
-    }
-    setLocalData(country, { ...currData, contactList: contactList, index: currData.index - 1 })
+function deleteContact(countryKey, id) {
+    let currData = getLocalData(countryKey);
+    let contacts = currData.contacts;
+    delete contacts.id
+    setLocalData(countryKey, { ...currData, contacts: contacts })
 }
 
-function getLocalData(key) {
-    let localData = localStorage.getItem(key)
+function getLocalData(countryKey) {
+    let localData = localStorage.getItem(countryKey)
     if (!localData) {
-        setLocalData(key);
-        localData = localStorage.getItem(key);
+        setLocalData(countryKey);
+        localData = localStorage.getItem(countryKey);
     }
     console.log(localData)
     return JSON.parse(localData);
 }
 
-export { setLocalData, addContact, deleteContact, getLocalData }
+export { setLocalData, addOrUpdateContact, deleteContact, getLocalData }
