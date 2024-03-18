@@ -24,9 +24,14 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
+        console.log("Creating a contact")
+
         let localData = getLocalData(this.countryCode)
-        this.props.updateSearchParams({ editingContact: localData.index + 1 })
-        addOrUpdateContact(this.countryCode, this.props.searchParams.get(contactKey), { name:"", email:"", comment:""})
+        let newIndex = localData.index + 1
+        console.log(localData)
+        this.props.updateSearchParams({ editingContact: newIndex })
+        console.log("Creating contact at index " + this.props.searchParams.get(contactKey))
+        addOrUpdateContact(this.countryCode, newIndex, { name:"", email:"", comment:""})
         this.setEditableContact()
     }
 
@@ -36,23 +41,19 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     render() {
-        this.setEditableContact();
-
         let {
             editableContactId,
             createContact
         } = this;
 
-        console.log("passing contact to edit, index: " + editableContactId)
         let localData = getLocalData(this.countryCode)
         let contacts = localData.contacts ?? {};
-        console.log("printing contacts")
-        console.log(JSON.parse(JSON.stringify(contacts)))
 
         return (
             <DialogBody>
                 <div>
                 { Object.entries(contacts).map(([key, value]) => {
+                    console.log("editing contact is " + this.props.searchParams.get(contactKey))
                     if (key !== this.props.searchParams.get(contactKey)) {
                         console.log("printing contact " + key)
                         return (

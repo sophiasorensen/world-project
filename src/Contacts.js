@@ -40,17 +40,17 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     makeEditable() {
-        this.props.updateSearchParams({ editingContact: this.currentContact.index })
+        this.props.updateSearchParams({ editingContact: this.props.index })
         this.editable = true;
     }
 
     updateName(event) {
-        console.log("name: " + event.target.value);
+        // console.log("name: " + event.target.value);
         this.currentContact.name = event.target.value;
     }
 
     updateEmail(event) {
-        console.log("email: " + event.target.value);
+        // console.log("email: " + event.target.value);
         this.currentContact.email = event.target.value;
 
         if (!this.currentContact.email.includes('@')) {
@@ -59,16 +59,16 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     updateComment(event) {
-        console.log("comment: " + event.target.value);
+        // console.log("comment: " + event.target.value);
         this.currentContact.comment = event.target.value;
     }
 
     saveChanges() {
         this.editable = false;
-        addOrUpdateContact(this.countryCode, this.currentContact)
+        addOrUpdateContact(this.countryCode, this.props.index, this.currentContact)
         this.localData = getLocalData(this.countryCode)
         this.props.updateSearchParams({ editingContact: null })
-        console.log(this.localData)
+        // console.log(this.localData)
     }
 
     cancelChanges() {
@@ -77,10 +77,11 @@ const Contacts = observer( class Contacts extends React.Component {
         if (this.props.index > this.localData.index) {
             this.currentContact = null;
             return;
+        } else {
+            this.currentContact.name = this.contacts[this.props.index].name;
+            this.currentContact.email = this.contacts[this.props.index].email;
+            this.currentContact.comment = this.contacts[this.props.index].comment;
         }
-        this.currentContact.name = this.contacts[this.props.index].name;
-        this.currentContact.email = this.contacts[this.props.index].email;
-        this.currentContact.comment = this.contacts[this.props.index].comment;
     }
 
     deleteContact() {

@@ -16,16 +16,16 @@ function setLocalData(country, { comment, url, contacts, index } = {}) {
 
 function addOrUpdateContact(countryKey, id, contact) {
     let currData = getLocalData(countryKey);
-    console.log("before adding contact: ")
-    console.log(currData.contacts)
+    // console.log("before adding contact: ")
     let contacts = currData.contacts;
     let name = contact.name
-    console.log("saving name: " + name)
+    // console.log("saving name: " + name)
     let email = contact.email
-    console.log("saving email: " + email)
+    // console.log("saving email: " + email)
     let comment = contact.comment
-    console.log("saving comment: " + comment)
+    // console.log("saving comment: " + comment)
     contacts[id] = { name, email, comment };
+    console.log(currData.contacts)
 
     setLocalData(countryKey, {
         comment: currData.comment,
