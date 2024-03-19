@@ -13,11 +13,10 @@ const Contacts = observer( class Contacts extends React.Component {
         this.countryCode = this.props.searchParams.get(countryKey);
         this.localData = getLocalData(this.countryCode)
         this.contacts = this.localData.contacts ?? {}
-        this.currentContact = this.props.currentContact ??
+        this.currentContact = this.localData.contacts[this.props.index] ??
             { name: "",
             email: "",
             comment: "" };
-        console.log(this.props.index)
         this.editable = this.props.index == this.props.searchParams.get(contactKey)
 
 
@@ -45,12 +44,12 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     updateName(event) {
-        // console.log("name: " + event.target.value);
+        console.log("name: " + event.target.value);
         this.currentContact.name = event.target.value;
     }
 
     updateEmail(event) {
-        // console.log("email: " + event.target.value);
+        console.log("email: " + event.target.value);
         this.currentContact.email = event.target.value;
 
         if (!this.currentContact.email.includes('@')) {
@@ -59,7 +58,7 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     updateComment(event) {
-        // console.log("comment: " + event.target.value);
+        console.log("comment: " + event.target.value);
         this.currentContact.comment = event.target.value;
     }
 
@@ -89,6 +88,7 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     render() {
+        console.log(this.currentContact)
         let {
             error,
             editable,
@@ -108,7 +108,7 @@ const Contacts = observer( class Contacts extends React.Component {
                     { editable ?
                         <InputGroup onChange={ updateName } value={ currentContact.name } placeholder="Name" />
                         :
-                        <p>{ currentContact.name }</p>
+                        <p>{ this.contacts[this.props.index].name }</p>
                     }
                 </div>
                 { error &&
@@ -124,13 +124,13 @@ const Contacts = observer( class Contacts extends React.Component {
                         value={ currentContact.email }
                         intent={ error ? "danger" : null} />
                     :
-                    <p>{ currentContact.email }</p>
+                    <p>{ this.contacts[this.props.index].email }</p>
                 }</div>
 
                 <div>Comment: { editable ?
                     <InputGroup onChange={ updateComment } placeholder="Comment" value={ currentContact.comment }></InputGroup>
                     :
-                    <p>{ currentContact.comment }</p>
+                    <p>{ this.contacts[this.props.index].comment }</p>
                 }</div>
 
                 <div align={"right"}>

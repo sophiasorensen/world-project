@@ -24,13 +24,9 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        console.log("Creating a contact")
-
         let localData = getLocalData(this.countryCode)
         let newIndex = localData.index + 1
-        console.log(localData)
         this.props.updateSearchParams({ editingContact: newIndex })
-        console.log("Creating contact at index " + this.props.searchParams.get(contactKey))
         addOrUpdateContact(this.countryCode, newIndex, { name:"", email:"", comment:""})
         this.setEditableContact()
     }
