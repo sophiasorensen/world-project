@@ -16,23 +16,18 @@ function setLocalData(country, { comment, url, contacts, index } = {}) {
 
 function addOrUpdateContact(countryKey, id, contact) {
     let currData = getLocalData(countryKey);
-    // console.log("before adding contact: ")
     let contacts = currData.contacts;
     let name = contact.name
-    // console.log("saving name: " + name)
     let email = contact.email
-    // console.log("saving email: " + email)
     let comment = contact.comment
-    // console.log("saving comment: " + comment)
     contacts[id] = { name, email, comment };
-    console.log(currData.contacts)
 
     setLocalData(countryKey, {
         comment: currData.comment,
         url: currData.url,
-        contacts: contacts
+        contacts: contacts,
+        index: id > currData.index ? id : currData.index
     })
-    console.log(getLocalData(countryKey))
 }
 
 function deleteContact(countryKey, id) {
@@ -48,7 +43,6 @@ function getLocalData(countryKey) {
         setLocalData(countryKey);
         localData = localStorage.getItem(countryKey);
     }
-    console.log(localData)
     return JSON.parse(localData);
 }
 

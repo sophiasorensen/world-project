@@ -6,7 +6,8 @@ import { contactKey, countryKey } from "./common";
 import { addOrUpdateContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
-    error = false;
+    emailError = false;
+    nameError = false;
 
     constructor(props) {
         super(props);
@@ -24,7 +25,8 @@ const Contacts = observer( class Contacts extends React.Component {
             currentContact:observable,
             contacts:observable,
             countryCode:observable,
-            error:observable,
+            emailError:observable,
+            nameError:observable,
             editable:observable,
             localData:observable,
 
@@ -44,21 +46,21 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     updateName(event) {
-        console.log("name: " + event.target.value);
         this.currentContact.name = event.target.value;
+        if (this.currentContact.name === "") {
+            this.nameError = true;
+        } else { this.nameError = false; }
     }
 
     updateEmail(event) {
-        console.log("email: " + event.target.value);
         this.currentContact.email = event.target.value;
 
         if (!this.currentContact.email.includes('@')) {
-            this.error = true;
-        } else { this.error = false; }
+            this.emailError = true;
+        } else { this.emailError = false; }
     }
 
     updateComment(event) {
-        console.log("comment: " + event.target.value);
         this.currentContact.comment = event.target.value;
     }
 
@@ -67,7 +69,6 @@ const Contacts = observer( class Contacts extends React.Component {
         addOrUpdateContact(this.countryCode, this.props.index, this.currentContact)
         this.localData = getLocalData(this.countryCode)
         this.props.updateSearchParams({ editingContact: null })
-        // console.log(this.localData)
     }
 
     cancelChanges() {
@@ -75,7 +76,6 @@ const Contacts = observer( class Contacts extends React.Component {
         this.props.updateSearchParams({ editingContact: null })
         if (this.props.index > this.localData.index) {
             this.currentContact = null;
-            return;
         } else {
             this.currentContact.name = this.contacts[this.props.index].name;
             this.currentContact.email = this.contacts[this.props.index].email;
@@ -88,9 +88,9 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     render() {
-        console.log(this.currentContact)
         let {
-            error,
+            emailError,
+            nameError,
             editable,
             currentContact,
             makeEditable,
@@ -104,14 +104,23 @@ const Contacts = observer( class Contacts extends React.Component {
 
         return(
             <Card interactive={ true }>
+                { nameError &&
+                    <p className={ "error-text" }>
+                        Name is required
+                    </p>
+                }
                 <div>
                     { editable ?
-                        <InputGroup onChange={ updateName } value={ currentContact.name } placeholder="Name" />
+                        <InputGroup
+                            onChange={ updateName }
+                            value={ currentContact.name }
+                            placeholder="Name"
+                            intent={ emailError ? "danger" : null} />
                         :
                         <p>{ this.contacts[this.props.index].name }</p>
                     }
                 </div>
-                { error &&
+                { emailError &&
                     <p className={ "error-text" }>
                         Email addresses must include @
                     </p>
@@ -122,7 +131,7 @@ const Contacts = observer( class Contacts extends React.Component {
                         onChange={ updateEmail }
                         placeholder="Enter a valid email address"
                         value={ currentContact.email }
-                        intent={ error ? "danger" : null} />
+                        intent={ emailError ? "danger" : null} />
                     :
                     <p>{ this.contacts[this.props.index].email }</p>
                 }</div>
@@ -137,7 +146,7 @@ const Contacts = observer( class Contacts extends React.Component {
                     { editable ?
                         <div align="right">
                             <Button className="card-button" onClick={ cancelChanges }>Cancel</Button>
-                            <Button className="card-button" intent="primary" onClick={ saveChanges } disabled={ error }>Save</Button>
+                            <Button className="card-button" intent="primary" onClick={ saveChanges } disabled={ emailError || nameError }>Save</Button>
                         </div>
                          :
                         <div align="right">

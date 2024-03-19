@@ -12,7 +12,6 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
         this.localData = getLocalData(this.countryCode) ?? setLocalData(this.countryCode);
-        console.log(this.localData)
 
         makeObservable(this, {
             localData: observable,
@@ -26,6 +25,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     createContact() {
         let localData = getLocalData(this.countryCode)
         let newIndex = localData.index + 1
+        console.log(newIndex)
         this.props.updateSearchParams({ editingContact: newIndex })
         addOrUpdateContact(this.countryCode, newIndex, { name:"", email:"", comment:""})
         this.setEditableContact()
@@ -49,9 +49,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
             <DialogBody>
                 <div>
                 { Object.entries(contacts).map(([key, value]) => {
-                    console.log("editing contact is " + this.props.searchParams.get(contactKey))
                     if (key !== this.props.searchParams.get(contactKey)) {
-                        console.log("printing contact " + key)
                         return (
                             <Contacts
                                 key={ key }
