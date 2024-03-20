@@ -16,7 +16,7 @@ export default function CountryDialog({ searchParams, updateSearchParams }) {
     let currentTab = searchParams.get("countryTab") ?? "Info";
 
     function handleClose() {
-        updateSearchParams({ country: null, countryTab: null });
+        updateSearchParams({ country: null, countryTab: null, editingContact: null });
     }
 
     function setCountryTab(newTabId) {
