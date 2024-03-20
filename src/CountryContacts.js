@@ -10,8 +10,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     editableContactId = undefined
     constructor(props) {
         super(props);
-        this.countryCode = this.props.searchParams.get(countryKey);
-        this.localData = getLocalData(this.countryCode) ?? setLocalData(this.countryCode);
+        this.localData = getLocalData(this.props.countryCode)
 
         makeObservable(this, {
             localData: observable,
@@ -23,11 +22,14 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let localData = getLocalData(this.countryCode)
+        let { localData } = this
+        let { countryCode, updateSearchParams } = this.props
+
         let newIndex = localData.index + 1
-        this.props.updateSearchParams({ editingContact: newIndex })
-        addOrUpdateContact(this.countryCode, newIndex, { name:"", email:"", comment:""})
+        updateSearchParams({ editingContact: newIndex })
+        addOrUpdateContact(countryCode, newIndex, { name:"", email:"", comment:""})
         this.setEditableContact()
+        this.localData = getLocalData(countryCode)
     }
 
     setEditableContact() {
@@ -37,37 +39,44 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
     render() {
         let {
+            localData,
             editableContactId,
             createContact
         } = this;
-
-        let localData = getLocalData(this.countryCode)
-        let contacts = localData.contacts ?? {};
+        let {
+            countryCode,
+            searchParams,
+            updateSearchParams
+        } = this.props
 
         return (
             <DialogBody>
                 <div>
-                { Object.entries(contacts).map(([key, value]) => {
-                    if (key !== this.props.searchParams.get(contactKey)) {
+                { Object.entries(localData.contacts).map(([key, value]) => {
+                    console.log("do not print contact " + searchParams.get(contactKey))
+                    if (key !== searchParams.get(contactKey)) {
+                        console.log("rendering contact " + key)
                         return (
                             <Contacts
                                 key={ key }
                                 index={ key }
                                 currentContact={ value }
-                                searchParams={ this.props.searchParams }
-                                updateSearchParams={ this.props.updateSearchParams }
+                                countryCode = { countryCode }
+                                searchParams={ searchParams }
+                                updateSearchParams={ updateSearchParams }
                             />
                         )
                     }
                 })}
                 </div>
-                { this.props.searchParams.get(contactKey) ?
+                { searchParams.get(contactKey) ?
                     <Contacts
-                        key={ this.props.searchParams.get(contactKey) }
-                        index={ this.props.searchParams.get(contactKey) }
-                        currentContact={ contacts[editableContactId] }
-                        searchParams={ this.props.searchParams }
-                        updateSearchParams={ this.props.updateSearchParams }
+                        key={ searchParams.get(contactKey) }
+                        index={ searchParams.get(contactKey) }
+                        currentContact={ localData.contacts[editableContactId] }
+                        countryCode = { countryCode }
+                        searchParams={ searchParams }
+                        updateSearchParams={ updateSearchParams }
                     /> : <Button className="dialog-button" intent="success" onClick={ createContact }>+ Create new contact</Button>
                 }
 

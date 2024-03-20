@@ -15,6 +15,7 @@ function setLocalData(country, { comment, url, contacts, index } = {}) {
         index: index ?? 0,
     }
     localStorage.setItem(country, JSON.stringify(countryData))
+    console.log(countryData.contacts)
 }
 
 function addOrUpdateContact(countryKey, id, contact) {

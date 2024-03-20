@@ -11,8 +11,8 @@ const Contacts = observer( class Contacts extends React.Component {
 
     constructor(props) {
         super(props);
-        this.countryCode = this.props.searchParams.get(countryKey);
-        this.localData = getLocalData(this.countryCode)
+        console.log(this.props.countryCode)
+        this.localData = getLocalData(this.props.countryCode)
         this.currentContact = this.localData.contacts[this.props.index] ??
             { name: "",
             email: "",
@@ -22,7 +22,6 @@ const Contacts = observer( class Contacts extends React.Component {
 
         makeObservable(this, {
             currentContact:observable,
-            countryCode:observable,
             emailError:observable,
             nameError:observable,
             editable:observable,
@@ -63,28 +62,34 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     saveChanges() {
+        let { index, countryCode, updateSearchParams } = this.props
+
         this.editable = false;
-        addOrUpdateContact(this.countryCode, this.props.index, this.currentContact)
-        this.props.updateSearchParams({ editingContact: null })
+        addOrUpdateContact(countryCode, index, this.currentContact)
+        updateSearchParams({ editingContact: null })
     }
 
     cancelChanges() {
+        let { index, countryCode, updateSearchParams } = this.props
+
         this.editable = false;
-        this.props.updateSearchParams({ editingContact: null })
-        if (this.localData.contacts[this.props.index].name === "") {
-            deleteContact(this.countryCode, this.props.index)
-            this.localData = getLocalData(this.countryCode)
+        updateSearchParams({ editingContact: null })
+        if (this.localData.contacts[index].name === "") {
+            deleteContact(countryCode, index)
+            this.localData = getLocalData(countryCode)
             return
         }
 
-        this.currentContact.name = this.localData.contacts[this.props.index].name;
-        this.currentContact.email = this.localData.contacts[this.props.index].email;
-        this.currentContact.comment = this.localData.contacts[this.props.index].comment;
+        this.currentContact.name = this.localData.contacts[index].name;
+        this.currentContact.email = this.localData.contacts[index].email;
+        this.currentContact.comment = this.localData.contacts[index].comment;
     }
 
     deleteContact() {
-        deleteContact(this.countryCode, this.props.index);
-        this.localData = getLocalData(this.countryCode)
+        let { index, countryCode } = this.props
+
+        deleteContact(countryCode, index);
+        this.localData = getLocalData(countryCode)
     }
 
     render() {
@@ -103,10 +108,12 @@ const Contacts = observer( class Contacts extends React.Component {
             deleteContact
         } = this;
 
+        let { index } = this.props
+
         return(
             <div>
             {
-                this.props.index in localData.contacts &&
+                index in localData.contacts &&
                     <Card interactive={ true }>
                         { nameError &&
                             <p className={ "error-text" }>
@@ -121,7 +128,7 @@ const Contacts = observer( class Contacts extends React.Component {
                                     placeholder="Name"
                                     intent={ nameError ? "danger" : null }/>
                                 :
-                                <p>{ localData.contacts[this.props.index].name }</p>
+                                <p>{ localData.contacts[index].name }</p>
                             }
                         </div>
                         { emailError &&
@@ -137,14 +144,14 @@ const Contacts = observer( class Contacts extends React.Component {
                                 value={ currentContact.email }
                                 intent={ emailError ? "danger" : null }/>
                             :
-                            <p>{ localData.contacts[this.props.index].email }</p>
+                            <p>{ localData.contacts[index].email }</p>
                         }</div>
 
                         <div>Comment: { editable ?
                             <InputGroup onChange={ updateComment } placeholder="Comment"
                                         value={ currentContact.comment }></InputGroup>
                             :
-                            <p>{ localData.contacts[this.props.index].comment }</p>
+                            <p>{ localData.contacts[index].comment }</p>
                         }</div>
 
                         <div align={ "right" }>
