@@ -106,7 +106,7 @@ const Contacts = observer( class Contacts extends React.Component {
         return(
             <div>
             {
-                Object.keys(localData.contacts).includes(this.props.index) &&
+                this.props.index in localData.contacts &&
                     <Card interactive={ true }>
                         { nameError &&
                             <p className={ "error-text" }>

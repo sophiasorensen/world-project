@@ -6,12 +6,14 @@ import { Spinner } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
 import { continentKey, worldCode } from "./common";
+import { getLocalData } from "./localCrud";
 
 
 const CountryRow = ({ updateSearchParams, country }) => {
-    let localData = localStorage.getItem(country.code)
-    let localCountryData = JSON.parse(localData)
-    let localURL = localCountryData ? localCountryData.url : ""
+    // let localData = localStorage.getItem(country.code)
+    // let localCountryData = JSON.parse(localData)
+    let localData = getLocalData(country.code)
+    let localURL = localData ? localData.url : ""
     function handleClick()  {
         updateSearchParams({ country: country.code })
     }

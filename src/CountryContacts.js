@@ -11,7 +11,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     constructor(props) {
         super(props);
         this.countryCode = this.props.searchParams.get(countryKey);
-        this.localData = getLocalData(this.countryCode) ?? setLocalData(this.countryCode);
+        this.localData = getLocalData(this.countryCode)
 
         makeObservable(this, {
             localData: observable,
@@ -23,8 +23,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let localData = getLocalData(this.countryCode)
-        let newIndex = localData.index + 1
+        let newIndex = this.localData.index + 1
         this.props.updateSearchParams({ editingContact: newIndex })
         addOrUpdateContact(this.countryCode, newIndex, { name:"", email:"", comment:""})
         this.setEditableContact()
@@ -37,17 +36,15 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
     render() {
         let {
+            localData,
             editableContactId,
             createContact
         } = this;
 
-        let localData = getLocalData(this.countryCode)
-        let contacts = localData.contacts ?? {};
-
         return (
             <DialogBody>
                 <div>
-                { Object.entries(contacts).map(([key, value]) => {
+                { Object.entries(localData.contacts).map(([key, value]) => {
                     if (key !== this.props.searchParams.get(contactKey)) {
                         return (
                             <Contacts
@@ -65,7 +62,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
                     <Contacts
                         key={ this.props.searchParams.get(contactKey) }
                         index={ this.props.searchParams.get(contactKey) }
-                        currentContact={ contacts[editableContactId] }
+                        currentContact={ localData.contacts[editableContactId] }
                         searchParams={ this.props.searchParams }
                         updateSearchParams={ this.props.updateSearchParams }
                     /> : <Button className="dialog-button" intent="success" onClick={ createContact }>+ Create new contact</Button>
