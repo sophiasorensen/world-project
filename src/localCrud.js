@@ -1,3 +1,7 @@
+import { contactKey } from "./common";
+import Contacts from "./Contacts";
+import React from "react";
+
 function setLocalData(country, { comment, url, contacts, index } = {}) {
     if (!country) {
         console.log("No country, cannot set local data");
@@ -11,7 +15,6 @@ function setLocalData(country, { comment, url, contacts, index } = {}) {
         index: index ?? 0,
     }
     localStorage.setItem(country, JSON.stringify(countryData))
-
 }
 
 function addOrUpdateContact(countryKey, id, contact) {
@@ -33,8 +36,13 @@ function addOrUpdateContact(countryKey, id, contact) {
 function deleteContact(countryKey, id) {
     let currData = getLocalData(countryKey);
     let contacts = currData.contacts;
-    delete contacts.id
-    setLocalData(countryKey, { ...currData, contacts: contacts })
+    let newContacts = {}
+    for (const [key, value] of Object.entries(contacts)) {
+        if (key !== id) {
+            newContacts[key] = value
+        }
+    }
+    setLocalData(countryKey, { ...currData, contacts: newContacts, index: currData.index })
 }
 
 function getLocalData(countryKey) {
