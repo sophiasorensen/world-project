@@ -1,7 +1,7 @@
 import { Navbar } from "./Navbar";
 import { CountryTable } from "./CountryTable";
 import React from "react";
-import CountryInfo from "./CountryInfo";
+import CountryDialog from "./CountryDialog";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
 
@@ -25,7 +25,7 @@ export default function Page() {
             <Header updateSearchParams={ updateSearchParams } />
             <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
             <CountryTable searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
-            <CountryInfo searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
+            <CountryDialog searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
         </div>
     );
 }

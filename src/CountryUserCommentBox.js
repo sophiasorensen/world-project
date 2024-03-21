@@ -3,7 +3,8 @@ import { Button, H6, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import "./App.css";
-import {countryKey} from "./common";
+import { countryKey } from "./common";
+import { getLocalData, setLocalData } from "./localCrud";
 
 const validUrl1 = "http://";
 const validUrl2 = "https://";
@@ -14,11 +15,13 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     constructor(props) {
         super(props);
-        let initJson = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)))
-        this.commentText = initJson?.comment ?? "";
-        this.urlText = initJson?.url ?? "";
+        const countryCode = this.props.searchParams.get(countryKey)
+        this.localData = getLocalData(countryCode)
+        this.commentText = this.localData?.comment ?? "";
+        this.urlText = this.localData?.url ?? "";
 
         makeObservable(this, {
+            localData: observable,
             commentText:observable,
             urlText:observable,
             writable:observable,
@@ -57,7 +60,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         this.toggleReadability();
 
         let countryCode = this.props.searchParams.get(countryKey);
-        localStorage.setItem(countryCode, JSON.stringify({ comment: this.commentText, url: this.urlText }));
+        setLocalData(countryCode, { comment: this.commentText, url: this.urlText })
     }
 
     cancelChanges() {
@@ -65,13 +68,13 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         this.error = false;
 
         let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)));
+        console.log(parsed)
         this.commentText = parsed.comment;
         this.urlText = parsed.url;
     }
 
     render() {
         let {
-
             commentText,
             urlText,
             writable,

@@ -1,11 +1,7 @@
-import * as React from "react";
-import { useQuery } from "@apollo/client";
-import { queryCountry } from "./queries";
-import { Dialog, DialogBody, Spinner, TextArea } from "@blueprintjs/core";
-import ErrorPage from "./ErrorPage";
-import "./App.css";
+import React from "react";
+import { observer } from "mobx-react";
 import CountryUserCommentBox from "./CountryUserCommentBox";
-import { countryKey } from "./common";
+import { DialogBody } from "@blueprintjs/core";
 
 function CountryDataRow({header, data}) {
     return (
@@ -15,40 +11,33 @@ function CountryDataRow({header, data}) {
         </tr>
     );
 }
+const CountryInfo = observer( class CountryInfo extends React.Component {
 
-export default function CountryInfo({ searchParams, updateSearchParams }) {
-    const country = searchParams.get(countryKey);
-    const dialogEnabled = !!country;
-    const variables = dialogEnabled ? { code: country } : {};
-    const { data, loading, error } = useQuery(queryCountry, { variables, skip: !dialogEnabled });
-
-    function handleClose() {
-        updateSearchParams({ country: null });
+    constructor(props) {
+        super(props);
     }
 
-    return (
-        <Dialog isOpen={ dialogEnabled } onClose={ handleClose } className="dialog-window">
+    render() {
+        let {
+            data,
+            searchParams,
+            updateSearchParams
+        } = this.props;
+
+        return (
             <DialogBody>
-                { error && <ErrorPage error={ error } /> }
-                { loading && <Spinner className="dialog-window"/> }
-                { !error && !loading &&
-                    <table className="bp5-html-table bp5-compact">
-                        <thead>
-                            <tr>
-                                <th>
-                                    { data?.country.emoji }<span className="tab">{ data?.country.name }</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <CountryDataRow header="Continent" data={ data?.country.continent.name } />
-                            <CountryDataRow header="Capital" data={ data?.country.capital } />
-                            <CountryDataRow header="Currency" data={ data?.country.currency } />
-                            <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
-                        </tbody>
-                    </table> }
+                <table className="bp5-html-table bp5-compact">
+                    <tbody>
+                    <CountryDataRow header="Continent" data={ data?.country.continent.name } />
+                    <CountryDataRow header="Capital" data={ data?.country.capital } />
+                    <CountryDataRow header="Currency" data={ data?.country.currency } />
+                    <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
+                    </tbody>
+                </table>
                 <CountryUserCommentBox searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
             </DialogBody>
-        </Dialog>
-    );
-}
+        );
+    }
+})
+
+export default CountryInfo;
