@@ -4,7 +4,7 @@ import { Button, DialogBody } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { contactKey, countryKey } from "./common";
 import Contacts from "./Contacts";
-import { addOrUpdateContact, getLocalData, setLocalData } from "./localCrud";
+import { addContact, getLocalData } from "./localCrud";
 
 const CountryContacts = observer( class CountryContacts extends React.Component {
     editableContactId = undefined
@@ -22,14 +22,12 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let { localData } = this
         let { countryCode, updateSearchParams } = this.props
 
-        let newIndex = localData.index + 1
-        updateSearchParams({ editingContact: newIndex })
-        addOrUpdateContact(countryCode, newIndex, { name:"", email:"", comment:""})
+        addContact(countryCode)
         this.setEditableContact()
         this.localData = getLocalData(countryCode)
+        updateSearchParams({ editingContact: this.localData.previousContactIndex })
     }
 
     setEditableContact() {
@@ -53,9 +51,7 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
             <DialogBody>
                 <div>
                 { Object.entries(localData.contacts).map(([key, value]) => {
-                    console.log("do not print contact " + searchParams.get(contactKey))
                     if (key !== searchParams.get(contactKey)) {
-                        console.log("rendering contact " + key)
                         return (
                             <Contacts
                                 key={ key }

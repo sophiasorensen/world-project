@@ -1,8 +1,6 @@
-import { contactKey } from "./common";
-import Contacts from "./Contacts";
 import React from "react";
 
-function setLocalData(country, { comment, url, contacts, index } = {}) {
+function setLocalData(country, { comment, url, contacts, previousContactIndex } = {}) {
     if (!country) {
         console.log("No country, cannot set local data");
         return null;
@@ -12,38 +10,44 @@ function setLocalData(country, { comment, url, contacts, index } = {}) {
         comment: comment ?? "",
         url: url ?? "",
         contacts: contacts ?? {},
-        index: index ?? 0,
+        previousContactIndex: previousContactIndex ?? 0,
     }
     localStorage.setItem(country, JSON.stringify(countryData))
-    console.log(countryData.contacts)
 }
 
-function addOrUpdateContact(countryKey, id, contact) {
+function addContact(countryKey) {
     let currData = getLocalData(countryKey);
     let contacts = currData.contacts;
-    let name = contact.name
-    let email = contact.email
-    let comment = contact.comment
-    contacts[id] = { name, email, comment };
-
+    let newIndex = ++currData.previousContactIndex
+    contacts[newIndex] = { name:"", email:"", comment:"" }
     setLocalData(countryKey, {
-        comment: currData.comment,
-        url: currData.url,
+        ...currData,
         contacts: contacts,
-        index: id > currData.index ? id : currData.index
+        previousContactIndex: newIndex
     })
 }
 
-function deleteContact(countryKey, id) {
+function updateContact(countryKey, index, contact) {
+    let currData = getLocalData(countryKey);
+    let contacts = { ...currData.contacts };
+    let name = contact.name
+    let email = contact.email
+    let comment = contact.comment
+    contacts[index] = { name, email, comment };
+
+    setLocalData(countryKey, { ...currData, contacts: contacts })
+}
+
+function deleteContact(countryKey, index) {
     let currData = getLocalData(countryKey);
     let contacts = currData.contacts;
     let newContacts = {}
     for (const [key, value] of Object.entries(contacts)) {
-        if (key !== id) {
+        if (key !== index) {
             newContacts[key] = value
         }
     }
-    setLocalData(countryKey, { ...currData, contacts: newContacts, index: currData.index })
+    setLocalData(countryKey, { ...currData, contacts: newContacts })
 }
 
 function getLocalData(countryKey) {
@@ -55,4 +59,4 @@ function getLocalData(countryKey) {
     return JSON.parse(localData);
 }
 
-export { setLocalData, addOrUpdateContact, deleteContact, getLocalData }
+export { setLocalData, addContact, updateContact, deleteContact, getLocalData }

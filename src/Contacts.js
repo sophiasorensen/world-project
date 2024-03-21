@@ -3,7 +3,7 @@ import React from "react";
 import { action, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { contactKey, countryKey } from "./common";
-import { addOrUpdateContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
+import { updateContact, deleteContact, getLocalData } from "./localCrud";
 
 const Contacts = observer( class Contacts extends React.Component {
     emailError = false;
@@ -11,7 +11,6 @@ const Contacts = observer( class Contacts extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.countryCode)
         this.localData = getLocalData(this.props.countryCode)
         this.currentContact = this.localData.contacts[this.props.index] ??
             { name: "",
@@ -65,7 +64,7 @@ const Contacts = observer( class Contacts extends React.Component {
         let { index, countryCode, updateSearchParams } = this.props
 
         this.editable = false;
-        addOrUpdateContact(countryCode, index, this.currentContact)
+        updateContact(countryCode, index, this.currentContact)
         updateSearchParams({ editingContact: null })
     }
 
