@@ -90,7 +90,11 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
                     URLs must begin with "{validUrl1}" or "{validUrl2}"
                 </p>
                 }
-                <InputGroup readOnly={ !writable } onChange={ this.setUrl } value={ urlText } intent={ error ? "danger" : null } />
+                <InputGroup
+                    readOnly={ !writable }
+                    onChange={ this.setUrl }
+                    value={ urlText }
+                    intent={ error ? "danger" : null } />
                 <div className={ "info-margin" } />
                 { writable ?
                     <div>
