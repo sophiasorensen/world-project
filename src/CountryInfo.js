@@ -20,6 +20,7 @@ const CountryInfo = observer( class CountryInfo extends React.Component {
     render() {
         let {
             data,
+            countryCode,
             searchParams,
             updateSearchParams
         } = this.props;
@@ -34,7 +35,7 @@ const CountryInfo = observer( class CountryInfo extends React.Component {
                     <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
                     </tbody>
                 </table>
-                <CountryUserCommentBox searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
+                <CountryUserCommentBox countryCode={ countryCode } searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
             </DialogBody>
         );
     }

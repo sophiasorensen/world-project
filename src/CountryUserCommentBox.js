@@ -15,10 +15,9 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     constructor(props) {
         super(props);
-        const countryCode = this.props.searchParams.get(countryKey)
-        this.localData = getLocalData(countryCode)
-        this.commentText = this.localData?.comment ?? "";
-        this.urlText = this.localData?.url ?? "";
+        this.localData = getLocalData(this.props.countryCode)
+        this.commentText = this.localData.comment;
+        this.urlText = this.localData.url;
 
         makeObservable(this, {
             localData: observable,
@@ -59,18 +58,16 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     saveChanges() {
         this.toggleReadability();
 
-        let countryCode = this.props.searchParams.get(countryKey);
-        setLocalData(countryCode, { comment: this.commentText, url: this.urlText })
+        setLocalData(this.props.countryCode, { ...this.localData, comment: this.commentText, url: this.urlText })
+        this.localData = getLocalData(this.props.countryCode)
     }
 
     cancelChanges() {
         this.toggleReadability();
         this.error = false;
 
-        let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)));
-        console.log(parsed)
-        this.commentText = parsed.comment;
-        this.urlText = parsed.url;
+        this.commentText = this.localData.comment;
+        this.urlText = this.localData.url;
     }
 
     render() {
@@ -84,7 +81,11 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         return (
             <div className="info-margin">
                 <H6 className="info-margin">Comment</H6>
-                <TextArea fill={ true } readOnly={ !writable } onChange={ this.setComment } value={ commentText } />
+                <TextArea
+                    fill={ true }
+                    readOnly={ !writable }
+                    onChange={ this.setComment }
+                    value={ writable ? commentText : this.localData.comment } />
                 <H6 className="info-margin">URL</H6>
                 { error && <p className={ "error-text" }>
                     URLs must begin with "{validUrl1}" or "{validUrl2}"
@@ -93,7 +94,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
                 <InputGroup
                     readOnly={ !writable }
                     onChange={ this.setUrl }
-                    value={ urlText }
+                    value={ writable ? urlText : this.localData.url }
                     intent={ error ? "danger" : null } />
                 <div className={ "info-margin" } />
                 { writable ?
