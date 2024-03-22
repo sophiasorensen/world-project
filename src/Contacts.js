@@ -41,7 +41,7 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     isEmailValid(email) {
-        return email.includes('@');
+        return email.includes('@') || email === "";
     }
 
     makeEditable() {
