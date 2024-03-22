@@ -13,13 +13,13 @@ const ValidInputGroup = observer( class CountryContacts extends React.Component 
     }
 
     render() {
-        let { errorPredicate, errorMessage, value, ...restProps } = this.props;
+        let { isError, errorMessage, value, ...restProps } = this.props;
         return(
             <div>
-                { !errorPredicate(value) && <p className={ "error-text"}>{errorMessage}</p> }
+                { !isError && <p className={ "error-text"}>{errorMessage}</p> }
                 <InputGroup
                     value={ value }
-                    intent={ !errorPredicate(value) ? "danger" : null }
+                    intent={ !isError ? "danger" : null }
                     { ...restProps }
                 />
             </div>);

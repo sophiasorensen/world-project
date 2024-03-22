@@ -24,8 +24,8 @@ const Contacts = observer( class Contacts extends React.Component {
             editable:observable,
             localData:observable,
 
-            isNameValid:action.bound,
-            isEmailValid:action.bound,
+            isNameValid:computed,
+            isEmailValid:computed,
             makeEditable:action.bound,
             updateName:action.bound,
             updateEmail:action.bound,
@@ -36,12 +36,12 @@ const Contacts = observer( class Contacts extends React.Component {
         });
     }
 
-    isNameValid(name) {
-        return name !== "";
+    get isNameValid() {
+        return this.currentContact.name !== "";
     }
 
-    isEmailValid(email) {
-        return email.includes('@') || email === "";
+    get isEmailValid() {
+        return this.currentContact.email.includes('@') || this.currentContact.email === "";
     }
 
     makeEditable() {
@@ -118,7 +118,7 @@ const Contacts = observer( class Contacts extends React.Component {
                         <div>
                             { editable ?
                                 <ValidInputGroup
-                                    errorPredicate={ isNameValid }
+                                    isError={ isNameValid }
                                     errorMessage="Name is required"
                                     onChange={ updateName }
                                     value={ currentContact.name }
@@ -131,7 +131,7 @@ const Contacts = observer( class Contacts extends React.Component {
 
                         <div>Email: { editable ?
                             <ValidInputGroup
-                                errorPredicate={ isEmailValid }
+                                isError={ isEmailValid }
                                 errorMessage="Email addresses must include @"
                                 onChange={ updateEmail }
                                 placeholder="Enter a valid email address"
@@ -156,7 +156,7 @@ const Contacts = observer( class Contacts extends React.Component {
                                             intent="primary"
                                             onClick={ saveChanges }
                                             disabled={
-                                        !(isNameValid(currentContact.name) && isEmailValid(currentContact.email))
+                                        !(isNameValid && isEmailValid)
                                     }>Save</Button>
                                 </div>
                                 :
