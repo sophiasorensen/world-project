@@ -2,18 +2,17 @@ import React from "react";
 import { observer } from "mobx-react";
 import { Button, DialogBody } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
-import { contactKey, countryKey } from "./common";
+import { contactKey,  } from "./common";
 import Contacts from "./Contacts";
-import { addContact, getLocalData } from "./localCrud";
 
 const CountryContacts = observer( class CountryContacts extends React.Component {
     editableContactId = undefined
+    localData = this.props.getLocalData(this.props.countryCode)
     constructor(props) {
         super(props);
-        this.localData = getLocalData(this.props.countryCode)
+        console.log("Constructing country contacts")
 
         makeObservable(this, {
-            localData: observable,
             editableContactId:observable,
 
             createContact:action.bound,
@@ -22,11 +21,12 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let { countryCode, updateSearchParams } = this.props
+        let { countryCode, updateSearchParams, addContact, getLocalData } = this.props
 
         addContact(countryCode)
         this.setEditableContact()
         this.localData = getLocalData(countryCode)
+        console.log(this.localData)
         updateSearchParams({ editingContact: this.localData.previousContactIndex })
     }
 
@@ -41,15 +41,20 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
             editableContactId,
             createContact
         } = this;
+        console.log(localData)
         let {
             countryCode,
             searchParams,
-            updateSearchParams
+            updateSearchParams,
+            getLocalData,
+            updateContact,
+            deleteContact
         } = this.props
 
+        console.log(localData)
+
         return (
-            <DialogBody>
-                <div>
+            <div>
                 { Object.entries(localData.contacts).map(([key, value]) => {
                     if (key !== searchParams.get(contactKey)) {
                         return (
@@ -60,11 +65,13 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
                                 countryCode = { countryCode }
                                 searchParams={ searchParams }
                                 updateSearchParams={ updateSearchParams }
+                                getLocalData={ getLocalData }
+                                updateContact={ updateContact }
+                                deleteContact={ deleteContact }
                             />
                         )
                     }
                 })}
-                </div>
                 { searchParams.get(contactKey) ?
                     <Contacts
                         key={ searchParams.get(contactKey) }
@@ -73,10 +80,12 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
                         countryCode = { countryCode }
                         searchParams={ searchParams }
                         updateSearchParams={ updateSearchParams }
+                        getLocalData={ getLocalData }
+                        updateContact={ updateContact }
+                        deleteContact={ deleteContact }
                     /> : <Button className="dialog-button" intent="success" onClick={ createContact }>+ Create new contact</Button>
                 }
-
-            </DialogBody>
+            </div>
         );
     }
 })

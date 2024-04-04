@@ -3,7 +3,6 @@ import React from "react";
 import { action, computed, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { contactKey, countryKey } from "./common";
-import { updateContact, deleteContact, getLocalData } from "./localCrud";
 import ValidInputGroup from "./ValidInputGroup";
 import { empty } from "@apollo/client";
 
@@ -11,7 +10,7 @@ const Contacts = observer( class Contacts extends React.Component {
 
     constructor(props) {
         super(props);
-        this.localData = getLocalData(this.props.countryCode)
+        this.localData = this.props.getLocalData(this.props.countryCode)
         this.currentContact = this.localData.contacts[this.props.index] ??
             { name: "",
             email: "",
@@ -62,7 +61,7 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     saveChanges() {
-        let { index, countryCode, updateSearchParams } = this.props
+        let { index, countryCode, updateSearchParams, updateContact } = this.props
 
         this.editable = false;
         updateContact(countryCode, index, this.currentContact)
@@ -70,7 +69,7 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     cancelChanges() {
-        let { index, countryCode, updateSearchParams } = this.props
+        let { index, countryCode, updateSearchParams, deleteContact, getLocalData } = this.props
 
         this.editable = false;
         updateSearchParams({ editingContact: null })
@@ -86,7 +85,7 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     deleteContact() {
-        let { index, countryCode } = this.props
+        let { index, countryCode, deleteContact, getLocalData } = this.props
 
         deleteContact(countryCode, index);
         this.localData = getLocalData(countryCode)

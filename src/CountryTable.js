@@ -6,10 +6,8 @@ import { Spinner } from "@blueprintjs/core";
 import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
 import { continentKey, worldCode } from "./common";
-import { getLocalData } from "./localCrud";
 
-
-const CountryRow = ({ updateSearchParams, country }) => {
+const CountryRow = ({ updateSearchParams, country, getLocalData }) => {
     let localData = getLocalData(country.code)
     let localURL = localData ? localData.url : ""
     function handleClick()  {
@@ -31,7 +29,7 @@ const CountryRow = ({ updateSearchParams, country }) => {
         </tr>
     );
 }
-export const CountryTable = ({ searchParams, updateSearchParams }) => {
+export const CountryTable = ({ searchParams, updateSearchParams, getLocalData }) => {
     let currentContinent = searchParams.get(continentKey) || worldCode;
     let q = searchParams.get('q') || "";
     let qCap = q.charAt(0).toUpperCase() + q.slice(1);
@@ -66,6 +64,7 @@ export const CountryTable = ({ searchParams, updateSearchParams }) => {
                     <CountryRow key={ country.code }
                                 updateSearchParams={ updateSearchParams }
                                 country={ country }
+                                getLocalData={ getLocalData }
                                 />) }
                 </tbody>
             </table>

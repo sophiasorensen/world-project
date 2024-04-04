@@ -3,8 +3,6 @@ import { Button, H6, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import "./App.css";
-import { countryKey } from "./common";
-import { getLocalData, setLocalData } from "./localCrud";
 
 const validUrl1 = "http://";
 const validUrl2 = "https://";
@@ -15,7 +13,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     constructor(props) {
         super(props);
-        this.localData = getLocalData(this.props.countryCode)
+        this.localData = this.props.getLocalData(this.props.countryCode)
         this.commentText = this.localData.comment;
         this.urlText = this.localData.url;
 
@@ -58,8 +56,8 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     saveChanges() {
         this.toggleReadability();
 
-        setLocalData(this.props.countryCode, { ...this.localData, comment: this.commentText, url: this.urlText })
-        this.localData = getLocalData(this.props.countryCode)
+        this.props.setLocalData(this.props.countryCode, { ...this.localData, comment: this.commentText, url: this.urlText })
+        this.localData = this.props.getLocalData(this.props.countryCode)
     }
 
     cancelChanges() {
