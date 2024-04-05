@@ -1,16 +1,16 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { Button, DialogBody } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
-import { contactKey,  } from "./common";
-import Contacts from "./Contacts";
+import { contactKey } from "./common";
+import Contact from "./Contact";
 
 const CountryContacts = observer( class CountryContacts extends React.Component {
     editableContactId = undefined
-    localData = this.props.getLocalData(this.props.countryCode)
+
+
     constructor(props) {
         super(props);
-        console.log("Constructing country contacts")
 
         makeObservable(this, {
             editableContactId:observable,
@@ -21,13 +21,11 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let { countryCode, updateSearchParams, addContact, getLocalData } = this.props
+        let { countryCode, updateSearchParams, localData, addContact, getLocalData } = this.props
 
         addContact(countryCode)
         this.setEditableContact()
-        this.localData = getLocalData(countryCode)
-        console.log(this.localData)
-        updateSearchParams({ editingContact: this.localData.previousContactIndex })
+        updateSearchParams({ editingContact: localData[countryCode].previousContactIndex })
     }
 
     setEditableContact() {
@@ -37,35 +35,31 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
     render() {
         let {
-            localData,
             editableContactId,
             createContact
         } = this;
-        console.log(localData)
         let {
+            localData,
             countryCode,
             searchParams,
             updateSearchParams,
-            getLocalData,
             updateContact,
             deleteContact
         } = this.props
 
-        console.log(localData)
-
         return (
             <div>
-                { Object.entries(localData.contacts).map(([key, value]) => {
+                { Object.entries(localData[countryCode].contacts).map(([key, value]) => {
                     if (key !== searchParams.get(contactKey)) {
                         return (
-                            <Contacts
+                            <Contact
                                 key={ key }
                                 index={ key }
                                 currentContact={ value }
                                 countryCode = { countryCode }
                                 searchParams={ searchParams }
                                 updateSearchParams={ updateSearchParams }
-                                getLocalData={ getLocalData }
+                                localData={ localData }
                                 updateContact={ updateContact }
                                 deleteContact={ deleteContact }
                             />
@@ -73,14 +67,14 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
                     }
                 })}
                 { searchParams.get(contactKey) ?
-                    <Contacts
+                    <Contact
                         key={ searchParams.get(contactKey) }
                         index={ searchParams.get(contactKey) }
-                        currentContact={ localData.contacts[editableContactId] }
+                        currentContact={ localData[countryCode].contacts[editableContactId] }
                         countryCode = { countryCode }
                         searchParams={ searchParams }
                         updateSearchParams={ updateSearchParams }
-                        getLocalData={ getLocalData }
+                        localData={ localData }
                         updateContact={ updateContact }
                         deleteContact={ deleteContact }
                     /> : <Button className="dialog-button" intent="success" onClick={ createContact }>+ Create new contact</Button>

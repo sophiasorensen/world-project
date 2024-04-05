@@ -23,23 +23,12 @@ const LocalCrud = observer( class Contacts extends React.Component {
         }
 
         this.currData[countryKey] = {
-                comment: comment ?? "",
-                url: url ?? "",
-                contacts: contacts ?? {},
-                previousContactIndex: previousContactIndex ?? 0,
-            }
+            comment: comment ?? "",
+            url: url ?? "",
+            contacts: contacts ?? {},
+            previousContactIndex: previousContactIndex ?? 0,
+        }
 
-        // this.currData["comment"] = comment ?? ""
-        // this.currData["url"] = url ?? ""
-        // this.currData["contacts"] = contacts ?? {}
-        // this.currData["previousContactIndex"] = previousContactIndex ?? 0
-
-        // let countryData = {
-        //     comment: comment ?? "",
-        //     url: url ?? "",
-        //     contacts: contacts ?? {},
-        //     previousContactIndex: previousContactIndex ?? 0,
-        // }
         localStorage.setItem(countryKey, JSON.stringify(this.currData[countryKey]))
     }
 
@@ -79,16 +68,17 @@ const LocalCrud = observer( class Contacts extends React.Component {
     }
 
      getLocalData(countryKey) {
-        let localData = localStorage.getItem(countryKey)
-        if (!localData) {
+        let countryData = this.currData[countryKey]
+        if (!countryData) {
             this.setLocalData(countryKey);
-            localData = localStorage.getItem(countryKey);
+            countryData = JSON.parse(localStorage.getItem(countryKey));
         }
-        return JSON.parse(localData);
+        return countryData;
     }
 
     render() {
-        let { getLocalData,
+        let { currData,
+            getLocalData,
             setLocalData,
             addContact,
             updateContact,
@@ -96,7 +86,8 @@ const LocalCrud = observer( class Contacts extends React.Component {
         } = this;
 
         return (
-            <Page getLocalData={ getLocalData }
+            <Page localData={ currData }
+                  getLocalData={ getLocalData }
                   setLocalData={ setLocalData }
                   addContact={ addContact }
                   updateContact={ updateContact }

@@ -13,12 +13,11 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     constructor(props) {
         super(props);
-        this.localData = this.props.getLocalData(this.props.countryCode)
-        this.commentText = this.localData.comment;
-        this.urlText = this.localData.url;
+        this.countryData = this.props.localData[this.props.countryCode]
+        this.commentText = this.countryData.comment;
+        this.urlText = this.countryData.url;
 
         makeObservable(this, {
-            localData: observable,
             commentText:observable,
             urlText:observable,
             writable:observable,
@@ -54,21 +53,41 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     }
 
     saveChanges() {
+        let {
+            localData,
+            countryCode,
+            setLocalData
+        } = this.props;
+
+        let {
+            commentText,
+            urlText
+        } = this;
+
         this.toggleReadability();
 
-        this.props.setLocalData(this.props.countryCode, { ...this.localData, comment: this.commentText, url: this.urlText })
-        this.localData = this.props.getLocalData(this.props.countryCode)
+        setLocalData(countryCode, { ...localData[countryCode], comment: commentText, url: urlText })
     }
 
     cancelChanges() {
+        let {
+            localData,
+            countryCode
+        } = this.props;
+
         this.toggleReadability();
         this.error = false;
 
-        this.commentText = this.localData.comment;
-        this.urlText = this.localData.url;
+        this.commentText = localData[countryCode].comment;
+        this.urlText = localData[countryCode].url;
     }
 
     render() {
+        let {
+            localData,
+            countryCode
+        } = this.props;
+
         let {
             commentText,
             urlText,
@@ -83,7 +102,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
                     fill={ true }
                     readOnly={ !writable }
                     onChange={ this.setComment }
-                    value={ writable ? commentText : this.localData.comment } />
+                    value={ writable ? commentText : localData[countryCode].comment } />
                 <H6 className="info-margin">URL</H6>
                 { error && <p className={ "error-text" }>
                     URLs must begin with "{validUrl1}" or "{validUrl2}"
@@ -92,7 +111,7 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
                 <InputGroup
                     readOnly={ !writable }
                     onChange={ this.setUrl }
-                    value={ writable ? urlText : this.localData.url }
+                    value={ writable ? urlText : localData[countryCode].url }
                     intent={ error ? "danger" : null } />
                 <div className={ "info-margin" } />
                 { writable ?

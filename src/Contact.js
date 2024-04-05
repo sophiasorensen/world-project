@@ -6,12 +6,11 @@ import { contactKey, countryKey } from "./common";
 import ValidInputGroup from "./ValidInputGroup";
 import { empty } from "@apollo/client";
 
-const Contacts = observer( class Contacts extends React.Component {
+const Contact = observer( class Contacts extends React.Component {
 
     constructor(props) {
         super(props);
-        this.localData = this.props.getLocalData(this.props.countryCode)
-        this.currentContact = this.localData.contacts[this.props.index] ??
+        this.currentContact = this.props.localData[this.props.countryCode].contacts[this.props.index] ??
             { name: "",
             email: "",
             comment: "" };
@@ -21,7 +20,6 @@ const Contacts = observer( class Contacts extends React.Component {
         makeObservable(this, {
             currentContact:observable,
             editable:observable,
-            localData:observable,
 
             isNameValid:computed,
             isEmailValid:computed,
@@ -69,31 +67,29 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     cancelChanges() {
-        let { index, countryCode, updateSearchParams, deleteContact, getLocalData } = this.props
+        let { index, countryCode, updateSearchParams, deleteContact, localData } = this.props
 
         this.editable = false;
         updateSearchParams({ editingContact: null })
-        if (this.localData.contacts[index].name === "") {
+        if (localData[countryCode].contacts[index].name === "") {
             deleteContact(countryCode, index)
-            this.localData = getLocalData(countryCode)
             return
         }
 
-        this.currentContact.name = this.localData.contacts[index].name;
-        this.currentContact.email = this.localData.contacts[index].email;
-        this.currentContact.comment = this.localData.contacts[index].comment;
+        this.currentContact.name = localData[countryCode].contacts[index].name;
+        this.currentContact.email = localData[countryCode].contacts[index].email;
+        this.currentContact.comment = localData[countryCode].contacts[index].comment;
     }
 
     deleteContact() {
         let { index, countryCode, deleteContact, getLocalData } = this.props
 
         deleteContact(countryCode, index);
-        this.localData = getLocalData(countryCode)
+        this.forceUpdate()
     }
 
     render() {
         let {
-            localData,
             editable,
             currentContact,
             isNameValid,
@@ -107,12 +103,15 @@ const Contacts = observer( class Contacts extends React.Component {
             deleteContact
         } = this;
 
-        let { index } = this.props
+        let {
+            localData,
+            countryCode,
+            index } = this.props
 
         return(
             <div>
             {
-                index in localData.contacts &&
+                index in localData[countryCode].contacts &&
                     <Card interactive={ true }>
                         <div>
                             { editable ?
@@ -124,7 +123,7 @@ const Contacts = observer( class Contacts extends React.Component {
                                     placeholder="Name"
                                 />
                                 :
-                                <p>{ localData.contacts[index].name }</p>
+                                <p>{ localData[countryCode].contacts[index].name }</p>
                             }
                         </div>
 
@@ -137,14 +136,14 @@ const Contacts = observer( class Contacts extends React.Component {
                                 value={ currentContact.email }
                             />
                             :
-                            <p>{ localData.contacts[index].email }</p>
+                            <p>{ localData[countryCode].contacts[index].email }</p>
                         }</div>
 
                         <div>Comment: { editable ?
                             <InputGroup onChange={ updateComment } placeholder="Comment"
                                         value={ currentContact.comment }></InputGroup>
                             :
-                            <p>{ localData.contacts[index].comment }</p>
+                            <p>{ localData[countryCode].contacts[index].comment }</p>
                         }</div>
 
                         <div align={ "right" }>
@@ -173,4 +172,4 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 })
 
-export default Contacts;
+export default Contact;

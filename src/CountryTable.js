@@ -7,9 +7,8 @@ import ErrorPage from "./ErrorPage";
 import Footer from "./Footer";
 import { continentKey, worldCode } from "./common";
 
-const CountryRow = ({ updateSearchParams, country, getLocalData }) => {
-    let localData = getLocalData(country.code)
-    let localURL = localData ? localData.url : ""
+const CountryRow = ({ updateSearchParams, localData, country }) => {
+    let localURL = localData[country.code] ? localData[country.code].url : ""
     function handleClick()  {
         updateSearchParams({ country: country.code })
     }
@@ -29,7 +28,7 @@ const CountryRow = ({ updateSearchParams, country, getLocalData }) => {
         </tr>
     );
 }
-export const CountryTable = ({ searchParams, updateSearchParams, getLocalData }) => {
+export const CountryTable = ({ searchParams, updateSearchParams, localData, getLocalData }) => {
     let currentContinent = searchParams.get(continentKey) || worldCode;
     let q = searchParams.get('q') || "";
     let qCap = q.charAt(0).toUpperCase() + q.slice(1);
@@ -61,10 +60,11 @@ export const CountryTable = ({ searchParams, updateSearchParams, getLocalData })
                 </thead>
                 <tbody>
                 { data.countries.map((country) =>
+                    getLocalData(country.code) &&
                     <CountryRow key={ country.code }
                                 updateSearchParams={ updateSearchParams }
+                                localData={ localData }
                                 country={ country }
-                                getLocalData={ getLocalData }
                                 />) }
                 </tbody>
             </table>

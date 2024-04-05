@@ -8,7 +8,7 @@ import { countryKey } from "./common";
 import CountryInfo from "./CountryInfo";
 import CountryContacts from "./CountryContacts";
 
-export default function CountryDialog({ searchParams, updateSearchParams, getLocalData, setLocalData, addContact, updateContact, deleteContact }) {
+export default function CountryDialog({ searchParams, updateSearchParams, localData, getLocalData, setLocalData, addContact, updateContact, deleteContact }) {
     const country = searchParams.get(countryKey);
     const dialogEnabled = !!country;
     const variables = dialogEnabled ? { code: country } : {};
@@ -18,12 +18,14 @@ export default function CountryDialog({ searchParams, updateSearchParams, getLoc
                                     countryCode={ country }
                                     searchParams={ searchParams }
                                     updateSearchParams={ updateSearchParams }
+                                    localData={ localData }
                                     getLocalData={ getLocalData }
                                     setLocalData={ setLocalData }
     /> );
     let countryContacts = ( <CountryContacts countryCode={ country }
                                              searchParams={ searchParams }
                                              updateSearchParams={ updateSearchParams }
+                                             localData={ localData }
                                              getLocalData={ getLocalData }
                                              setLocalData={ setLocalData }
                                              addContact={ addContact }
@@ -40,10 +42,6 @@ export default function CountryDialog({ searchParams, updateSearchParams, getLoc
         updateSearchParams({ countryTab: newTabId });
         currentTab = searchParams.get("countryTab");
     }
-
-    // function getCountryName() {
-    //     return data ? data?.country.emoji + " " + data?.country.name : null;
-    // }
 
     return (
         <Dialog isOpen={ dialogEnabled } onClose={ handleClose } className="dialog-window" title={ countryName } >
