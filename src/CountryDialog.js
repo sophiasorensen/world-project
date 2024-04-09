@@ -7,12 +7,13 @@ import "./App.css";
 import { countryKey } from "./common";
 import CountryInfo from "./CountryInfo";
 import CountryContacts from "./CountryContacts";
+import {observer} from "mobx-react";
 
 const dialogTabsParamKey = "countryTab";
 const infoId = "Info";
 const contactsId = "Contacts";
 
-export default function CountryDialog({ searchParams, updateSearchParams, getLocalData, setLocalData, addContact, updateContact, deleteContact }) {
+const CountryDialog = observer(({ searchParams, updateSearchParams, getLocalData, setLocalData, addContact, updateContact, deleteContact }) => {
     const countryCode = searchParams.get(countryKey);
 
     const dialogEnabled = !!countryCode;
@@ -71,4 +72,6 @@ export default function CountryDialog({ searchParams, updateSearchParams, getLoc
             </DialogBody>
         </Dialog>
     );
-}
+});
+
+export default CountryDialog

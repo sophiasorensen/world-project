@@ -4,8 +4,10 @@ import React from "react";
 import CountryDialog from "./CountryDialog";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
+import {observer} from "mobx-react";
+import {Button} from "@blueprintjs/core";
 
-export default function Page({ getLocalData, setLocalData, addContact, updateContact, deleteContact }) {
+const Page = observer(({ getLocalData, setLocalData, addContact, updateContact, deleteContact }) => {
     let [ searchParams, setSearchParams ] = useSearchParams(createSearchParams());
 
     function updateSearchParams(params) {
@@ -22,11 +24,11 @@ export default function Page({ getLocalData, setLocalData, addContact, updateCon
 
     return (
         <div>
-            <Header updateSearchParams={ updateSearchParams } />
-            <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
+            <Header updateSearchParams={ updateSearchParams }/>
+            <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
             <CountryTable searchParams={ searchParams }
                           updateSearchParams={ updateSearchParams }
-                          getLocalData={ getLocalData }
+                          getLocalData={getLocalData}
                           />
             <CountryDialog searchParams={ searchParams }
                            updateSearchParams={ updateSearchParams }
@@ -38,4 +40,6 @@ export default function Page({ getLocalData, setLocalData, addContact, updateCon
                            />
         </div>
     );
-}
+});
+
+export default Page

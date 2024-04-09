@@ -5,7 +5,7 @@ import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { editingContactKey } from "./common";
 import ValidInputGroup from "./ValidInputGroup";
 
-const Contact = observer( class Contacts extends React.Component {
+const Contact = observer(class Contact extends React.Component {
     constructor(props) {
         super(props);
 
@@ -66,7 +66,6 @@ const Contact = observer( class Contacts extends React.Component {
 
     cancelChanges() {
         let { contactId, contact, countryCode, updateSearchParams, deleteContact } = this.props
-        console.log(contact);
 
         this.editable = false;
         updateSearchParams({ editingContact: null });
@@ -171,6 +170,6 @@ const Contact = observer( class Contacts extends React.Component {
             </div>
         );
     }
-})
+});
 
 export default Contact;

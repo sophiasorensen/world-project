@@ -6,12 +6,11 @@ import Contact from "./Contact";
 import { editingContactKey } from "./common";
 
 const CountryContacts = observer(class CountryContacts extends React.Component {
-
     constructor(props) {
         super(props);
 
         makeObservable(this, {
-            createContact: action.bound,
+            createContact: action.bound
         });
     }
 
@@ -23,6 +22,8 @@ const CountryContacts = observer(class CountryContacts extends React.Component {
     }
 
     render() {
+        console.log("country contacts")
+
         let {
             createContact,
             props
@@ -43,7 +44,9 @@ const CountryContacts = observer(class CountryContacts extends React.Component {
 
         return (
             <div>
-                { contacts.filter(([ contactId ]) => contactId !== editingContactKeyParam).map(([ contactId, contact ]) =>
+                { contacts
+                    .filter(([ contactId ]) => contactId !== editingContactKeyParam)
+                    .map(([ contactId, contact ]) =>
                     <Contact key={ contactId }
                              contactId={ contactId }
                              contact={ contact }

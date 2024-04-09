@@ -12,7 +12,7 @@ function CountryDataRow({ header, data }) {
     );
 }
 
-class CountryInfo extends React.Component {
+const CountryInfo = observer(class CountryInfo extends React.Component {
     render() {
         let {
             country,
@@ -42,6 +42,6 @@ class CountryInfo extends React.Component {
             </Card>
         );
     }
-}
+});
 
 export default CountryInfo;

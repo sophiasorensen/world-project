@@ -5,7 +5,7 @@ import Page from "./Page";
 
 const localKey = "world-project"
 
-const LocalCrud = observer(class Contacts extends React.Component {
+const LocalCrud = observer(class LocalCrud extends React.Component {
     currData = observable.map({ }, { deep: false });
 
     constructor(props) {
@@ -15,7 +15,7 @@ const LocalCrud = observer(class Contacts extends React.Component {
             setLocalData: action.bound,
             addContact: action.bound,
             updateContact: action.bound,
-            deleteContact: action.bound
+            deleteContact: action.bound,
         });
 
         const initLocalData = JSON.parse(localStorage.getItem(localKey));
@@ -90,7 +90,7 @@ const LocalCrud = observer(class Contacts extends React.Component {
             if (key !== contactId)
                 newContacts[key] = value;
 
-        this.setLocalData(countryKey, { ...currData, contacts: newContacts })
+        this.setLocalData(countryKey, { ...currData, contacts: newContacts });
     }
 
     getLocalData = (countryKey) => {
@@ -107,12 +107,14 @@ const LocalCrud = observer(class Contacts extends React.Component {
         } = this;
 
         return (
-            <Page getLocalData={ getLocalData }
-                  setLocalData={ setLocalData }
-                  addContact={ addContact }
-                  updateContact={ updateContact }
-                  deleteContact={ deleteContact }
-                  />
+            <div>
+                <Page getLocalData={ getLocalData }
+                      setLocalData={ setLocalData }
+                      addContact={ addContact }
+                      updateContact={ updateContact }
+                      deleteContact={ deleteContact }
+                      />
+            </div>
         );
     }
 })
