@@ -7,7 +7,7 @@ import "./App.css";
 import { countryKey } from "./common";
 import CountryInfo from "./CountryInfo";
 import CountryContacts from "./CountryContacts";
-import {observer} from "mobx-react";
+import { observer } from "mobx-react";
 
 const dialogTabsParamKey = "countryTab";
 const infoId = "Info";

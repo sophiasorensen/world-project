@@ -107,14 +107,12 @@ const LocalCrud = observer(class LocalCrud extends React.Component {
         } = this;
 
         return (
-            <div>
-                <Page getLocalData={ getLocalData }
-                      setLocalData={ setLocalData }
-                      addContact={ addContact }
-                      updateContact={ updateContact }
-                      deleteContact={ deleteContact }
-                      />
-            </div>
+            <Page getLocalData={ getLocalData }
+                  setLocalData={ setLocalData }
+                  addContact={ addContact }
+                  updateContact={ updateContact }
+                  deleteContact={ deleteContact }
+                  />
         );
     }
 })
