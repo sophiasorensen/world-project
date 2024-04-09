@@ -5,8 +5,8 @@ import CountryDialog from "./CountryDialog";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
 
-export default function Page({localData, getLocalData, setLocalData, addContact, updateContact, deleteContact}) {
-    let [searchParams, setSearchParams] = useSearchParams(createSearchParams());
+export default function Page({ getLocalData, setLocalData, addContact, updateContact, deleteContact }) {
+    let [ searchParams, setSearchParams ] = useSearchParams(createSearchParams());
 
     function updateSearchParams(params) {
         let newParams = {};
@@ -14,7 +14,7 @@ export default function Page({localData, getLocalData, setLocalData, addContact,
             if (params[key] !== null) newParams[key] = value;
         });
 
-        for (const [key,value] of Object.entries(params)) {
+        for (const [key, value] of Object.entries(params)) {
             if (value !== null) newParams[key] = value;
         }
         setSearchParams(createSearchParams(newParams));
@@ -26,19 +26,16 @@ export default function Page({localData, getLocalData, setLocalData, addContact,
             <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
             <CountryTable searchParams={ searchParams }
                           updateSearchParams={ updateSearchParams }
-                          localData={ localData }
-                          setLocalData={ setLocalData}
                           getLocalData={ getLocalData }
-            />
+                          />
             <CountryDialog searchParams={ searchParams }
                            updateSearchParams={ updateSearchParams }
-                           localData={ localData }
                            getLocalData={ getLocalData }
                            setLocalData={ setLocalData }
                            addContact={ addContact }
                            updateContact={ updateContact }
                            deleteContact={ deleteContact }
-            />
+                           />
         </div>
     );
 }

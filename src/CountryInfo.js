@@ -3,51 +3,45 @@ import { observer } from "mobx-react";
 import CountryUserCommentBox from "./CountryUserCommentBox";
 import { Card } from "@blueprintjs/core";
 
-function CountryDataRow({header, data}) {
+function CountryDataRow({ header, data }) {
     return (
         <tr>
-            <th>{header}:</th>
-            <td>{data}</td>
+            <th>{ header }:</th>
+            <td>{ data }</td>
         </tr>
     );
 }
-const CountryInfo = observer( class CountryInfo extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
+class CountryInfo extends React.Component {
     render() {
         let {
-            data,
+            country,
             countryCode,
+            localCountry,
             searchParams,
             updateSearchParams,
-            localData,
-            getLocalData,
             setLocalData,
         } = this.props;
 
         return (
             <Card>
-                <table className="bp5-html-table bp5-compact">
+                <table className="bp5-html-table bp5-compact info-margin">
                     <tbody>
-                    <CountryDataRow header="Continent" data={ data?.country.continent.name } />
-                    <CountryDataRow header="Capital" data={ data?.country.capital } />
-                    <CountryDataRow header="Currency" data={ data?.country.currency } />
-                    <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
+                    <CountryDataRow header="Continent" data={ country?.continent.name } />
+                    <CountryDataRow header="Capital"   data={ country?.capital } />
+                    <CountryDataRow header="Currency"  data={ country?.currency } />
+                    <CountryDataRow header="Languages" data={ country?.languages.map((language) => language.name).join(", ") } />
                     </tbody>
                 </table>
                 <CountryUserCommentBox countryCode={ countryCode }
+                                       localCountry={ localCountry }
                                        searchParams={ searchParams }
                                        updateSearchParams={ updateSearchParams }
-                                       localData={ localData }
-                                       getLocalData={ getLocalData}
                                        setLocalData={ setLocalData }
-                />
+                                       />
             </Card>
         );
     }
-})
+}
 
 export default CountryInfo;

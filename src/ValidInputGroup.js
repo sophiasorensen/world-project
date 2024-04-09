@@ -3,26 +3,22 @@ import React from "react";
 import { makeObservable } from "mobx";
 import { InputGroup } from "@blueprintjs/core";
 
-const ValidInputGroup = observer( class CountryContacts extends React.Component {
-    constructor(props) {
-        super(props);
-
-        makeObservable(this, {
-
-        });
-    }
-
+class ValidInputGroup extends React.Component {
     render() {
-        let { isError, errorMessage, value, ...restProps } = this.props;
-        return(
+        let { isError, errorMessage, value, errorBelow = false, ...restProps } = this.props;
+
+        const errorElement = <p className="error-text">{ errorMessage }</p>;
+
+        return (
             <div>
-                { !isError && <p className={ "error-text"}>{errorMessage}</p> }
-                <InputGroup
-                    value={ value }
-                    intent={ !isError ? "danger" : null }
-                    { ...restProps }
-                />
+                { !isError && !errorBelow && errorElement }
+                <InputGroup value={ value }
+                            intent={ !isError ? "danger" : null }
+                            { ...restProps }
+                            />
+                { !isError && errorBelow && errorElement }
             </div>);
     }
-})
+}
+
 export default ValidInputGroup;

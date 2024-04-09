@@ -7,15 +7,15 @@ import "./App.css";
 const validUrl1 = "http://";
 const validUrl2 = "https://";
 
-const CountryUserCommentBox = observer( class CountryUserCommentBox extends React.Component {
+const CountryUserCommentBox = observer(class CountryUserCommentBox extends React.Component {
     writable = false;
     error = false;
 
     constructor(props) {
         super(props);
-        this.countryData = this.props.localData[this.props.countryCode]
-        this.commentText = this.countryData.comment;
-        this.urlText = this.countryData.url;
+
+        this.commentText = props.localCountry?.comment ?? "";
+        this.urlText = props.localCountry?.url ?? "";
 
         makeObservable(this, {
             commentText:observable,
@@ -39,13 +39,9 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         let { urlText } = this;
 
         this.urlText = event.target.value;
-        if (urlText) {
-            if (urlText.substring(0, validUrl1.length) === validUrl1 || urlText.substring(0, validUrl2.length) === validUrl2) {
-                this.error = false;
-            } else {
-                this.error = true;
-            }
-        }
+
+        if (urlText)
+            this.error = !(urlText.substring(0, validUrl1.length) === validUrl1 || urlText.substring(0, validUrl2.length) === validUrl2);
     }
 
     toggleReadability() {
@@ -54,75 +50,72 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     saveChanges() {
         let {
-            localData,
-            countryCode,
-            setLocalData
-        } = this.props;
-
-        let {
             commentText,
-            urlText
+            urlText,
+            props,
+            toggleReadability
         } = this;
 
-        this.toggleReadability();
+        let {
+            countryCode,
+            localCountry,
+            setLocalData
+        } = props;
 
-        setLocalData(countryCode, { ...localData[countryCode], comment: commentText, url: urlText })
+        toggleReadability();
+
+        setLocalData(countryCode, { ...localCountry, comment: commentText, url: urlText })
     }
 
     cancelChanges() {
         let {
-            localData,
-            countryCode
+            localCountry
         } = this.props;
 
         this.toggleReadability();
         this.error = false;
 
-        this.commentText = localData[countryCode].comment;
-        this.urlText = localData[countryCode].url;
+        this.commentText = localCountry?.comment ?? "";
+        this.urlText = localCountry?.url ?? "";
     }
 
     render() {
         let {
-            localData,
-            countryCode
-        } = this.props;
-
-        let {
-            commentText,
-            urlText,
-            writable,
-            error
-        } = this;
+            writable, error, commentText,
+            urlText, props, saveChanges,
+            cancelChanges, toggleReadability, setUrl, setComment } = this;
 
         return (
-            <div className="info-margin">
-                <H6 className="info-margin">Comment</H6>
-                <TextArea
-                    fill={ true }
-                    readOnly={ !writable }
-                    onChange={ this.setComment }
-                    value={ writable ? commentText : localData[countryCode].comment } />
-                <H6 className="info-margin">URL</H6>
-                { error && <p className={ "error-text" }>
-                    URLs must begin with "{validUrl1}" or "{validUrl2}"
+            <React.Fragment>
+                <H6>Comment</H6>
+                <TextArea className="info-margin"
+                          readOnly={ !writable }
+                          fill={ true }
+                          onChange={ setComment }
+                          value={ commentText }
+                          />
+                <H6>URL</H6>
+                { error &&
+                <p className={ "error-text" }>
+                    URLs must begin with "{ validUrl1 }" or "{ validUrl2 }"
                 </p>
                 }
-                <InputGroup
-                    readOnly={ !writable }
-                    onChange={ this.setUrl }
-                    value={ writable ? urlText : localData[countryCode].url }
-                    intent={ error ? "danger" : null } />
-                <div className={ "info-margin" } />
+                <InputGroup className="info-margin"
+                            readOnly={ !writable }
+                            onChange={ setUrl }
+                            value={ urlText }
+                            intent={ error ? "danger" : null }
+                            />
                 { writable ?
-                    <div>
-                        <Button className="button-margin" intent="primary" disabled={ error } onClick={ this.saveChanges }>Save</Button>
-                        <Button className="button-margin" onClick={ this.cancelChanges }>Cancel</Button>
-                    </div> : <Button onClick={ this.toggleReadability }>Edit</Button>
+                <div>
+                    <Button className="button-margin" intent="primary" disabled={ error } onClick={ saveChanges }>Save</Button>
+                    <Button className="button-margin" onClick={ cancelChanges }>Cancel</Button>
+                </div> :
+                <Button onClick={ toggleReadability }>Edit</Button>
                 }
-            </div>
+            </React.Fragment>
         );
     }
-} );
+});
 
 export default CountryUserCommentBox;
