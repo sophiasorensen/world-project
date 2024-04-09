@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react";
 import CountryUserCommentBox from "./CountryUserCommentBox";
-import { DialogBody } from "@blueprintjs/core";
+import { Card } from "@blueprintjs/core";
 
 function CountryDataRow({header, data}) {
     return (
@@ -20,12 +20,16 @@ const CountryInfo = observer( class CountryInfo extends React.Component {
     render() {
         let {
             data,
+            countryCode,
             searchParams,
-            updateSearchParams
+            updateSearchParams,
+            localData,
+            getLocalData,
+            setLocalData,
         } = this.props;
 
         return (
-            <DialogBody>
+            <Card>
                 <table className="bp5-html-table bp5-compact">
                     <tbody>
                     <CountryDataRow header="Continent" data={ data?.country.continent.name } />
@@ -34,8 +38,14 @@ const CountryInfo = observer( class CountryInfo extends React.Component {
                     <CountryDataRow header="Languages" data={ data?.country.languages.map((language) => language.name).join(", ") } />
                     </tbody>
                 </table>
-                <CountryUserCommentBox searchParams={ searchParams } updateSearchParams={ updateSearchParams }/>
-            </DialogBody>
+                <CountryUserCommentBox countryCode={ countryCode }
+                                       searchParams={ searchParams }
+                                       updateSearchParams={ updateSearchParams }
+                                       localData={ localData }
+                                       getLocalData={ getLocalData}
+                                       setLocalData={ setLocalData }
+                />
+            </Card>
         );
     }
 })

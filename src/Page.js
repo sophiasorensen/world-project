@@ -5,7 +5,7 @@ import CountryDialog from "./CountryDialog";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
 
-export default function Page() {
+export default function Page({localData, getLocalData, setLocalData, addContact, updateContact, deleteContact}) {
     let [searchParams, setSearchParams] = useSearchParams(createSearchParams());
 
     function updateSearchParams(params) {
@@ -24,8 +24,21 @@ export default function Page() {
         <div>
             <Header updateSearchParams={ updateSearchParams } />
             <Navbar searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
-            <CountryTable searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
-            <CountryDialog searchParams={ searchParams } updateSearchParams={ updateSearchParams } />
+            <CountryTable searchParams={ searchParams }
+                          updateSearchParams={ updateSearchParams }
+                          localData={ localData }
+                          setLocalData={ setLocalData}
+                          getLocalData={ getLocalData }
+            />
+            <CountryDialog searchParams={ searchParams }
+                           updateSearchParams={ updateSearchParams }
+                           localData={ localData }
+                           getLocalData={ getLocalData }
+                           setLocalData={ setLocalData }
+                           addContact={ addContact }
+                           updateContact={ updateContact }
+                           deleteContact={ deleteContact }
+            />
         </div>
     );
 }

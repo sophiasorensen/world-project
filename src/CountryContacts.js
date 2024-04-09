@@ -1,20 +1,18 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { Button, DialogBody } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
-import { contactKey, countryKey } from "./common";
-import Contacts from "./Contacts";
-import { addOrUpdateContact, getLocalData, setLocalData } from "./localCrud";
+import { contactKey } from "./common";
+import Contact from "./Contact";
 
 const CountryContacts = observer( class CountryContacts extends React.Component {
     editableContactId = undefined
+
+
     constructor(props) {
         super(props);
-        this.countryCode = this.props.searchParams.get(countryKey);
-        this.localData = getLocalData(this.countryCode)
 
         makeObservable(this, {
-            localData: observable,
             editableContactId:observable,
 
             createContact:action.bound,
@@ -23,10 +21,11 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
     }
 
     createContact() {
-        let newIndex = this.localData.index + 1
-        this.props.updateSearchParams({ editingContact: newIndex })
-        addOrUpdateContact(this.countryCode, newIndex, { name:"", email:"", comment:""})
+        let { countryCode, updateSearchParams, localData, addContact, getLocalData } = this.props
+
+        addContact(countryCode)
         this.setEditableContact()
+        updateSearchParams({ editingContact: localData[countryCode].previousContactIndex })
     }
 
     setEditableContact() {
@@ -36,39 +35,53 @@ const CountryContacts = observer( class CountryContacts extends React.Component 
 
     render() {
         let {
-            localData,
             editableContactId,
             createContact
         } = this;
 
+        let {
+            localData,
+            countryCode,
+            searchParams,
+            updateSearchParams,
+            updateContact,
+            deleteContact
+        } = this.props
+
         return (
-            <DialogBody>
-                <div>
-                { Object.entries(localData.contacts).map(([key, value]) => {
-                    if (key !== this.props.searchParams.get(contactKey)) {
+            <div>
+                { Object.entries(localData[countryCode].contacts).map(([key, value]) => {
+                    if (key !== searchParams.get(contactKey)) {
                         return (
-                            <Contacts
+                            <Contact
                                 key={ key }
                                 index={ key }
                                 currentContact={ value }
-                                searchParams={ this.props.searchParams }
-                                updateSearchParams={ this.props.updateSearchParams }
+                                countryCode = { countryCode }
+                                searchParams={ searchParams }
+                                updateSearchParams={ updateSearchParams }
+                                localData={ localData }
+                                updateContact={ updateContact }
+                                deleteContact={ deleteContact }
                             />
                         )
                     }
                 })}
-                </div>
-                { this.props.searchParams.get(contactKey) ?
-                    <Contacts
-                        key={ this.props.searchParams.get(contactKey) }
-                        index={ this.props.searchParams.get(contactKey) }
-                        currentContact={ localData.contacts[editableContactId] }
-                        searchParams={ this.props.searchParams }
-                        updateSearchParams={ this.props.updateSearchParams }
+
+                { searchParams.get(contactKey) ?
+                    <Contact
+                        key={ searchParams.get(contactKey) }
+                        index={ searchParams.get(contactKey) }
+                        currentContact={ localData[countryCode].contacts[editableContactId] }
+                        countryCode = { countryCode }
+                        searchParams={ searchParams }
+                        updateSearchParams={ updateSearchParams }
+                        localData={ localData }
+                        updateContact={ updateContact }
+                        deleteContact={ deleteContact }
                     /> : <Button className="dialog-button" intent="success" onClick={ createContact }>+ Create new contact</Button>
                 }
-
-            </DialogBody>
+            </div>
         );
     }
 })

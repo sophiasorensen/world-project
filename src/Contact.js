@@ -1,19 +1,16 @@
 import { observer } from "mobx-react";
 import React from "react";
-import { action, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { Button, Card, InputGroup } from "@blueprintjs/core";
 import { contactKey, countryKey } from "./common";
-import { addOrUpdateContact, deleteContact, getLocalData, setLocalData } from "./localCrud";
+import ValidInputGroup from "./ValidInputGroup";
+import { empty } from "@apollo/client";
 
-const Contacts = observer( class Contacts extends React.Component {
-    emailError = false;
-    nameError = false;
+const Contact = observer( class Contacts extends React.Component {
 
     constructor(props) {
         super(props);
-        this.countryCode = this.props.searchParams.get(countryKey);
-        this.localData = getLocalData(this.countryCode)
-        this.currentContact = this.localData.contacts[this.props.index] ??
+        this.currentContact = this.props.localData[this.props.countryCode].contacts[this.props.index] ??
             { name: "",
             email: "",
             comment: "" };
@@ -22,12 +19,10 @@ const Contacts = observer( class Contacts extends React.Component {
 
         makeObservable(this, {
             currentContact:observable,
-            countryCode:observable,
-            emailError:observable,
-            nameError:observable,
             editable:observable,
-            localData:observable,
 
+            isNameValid:computed,
+            isEmailValid:computed,
             makeEditable:action.bound,
             updateName:action.bound,
             updateEmail:action.bound,
@@ -38,6 +33,14 @@ const Contacts = observer( class Contacts extends React.Component {
         });
     }
 
+    get isNameValid() {
+        return this.currentContact.name !== "";
+    }
+
+    get isEmailValid() {
+        return this.currentContact.email.includes('@') || this.currentContact.email === "";
+    }
+
     makeEditable() {
         this.props.updateSearchParams({ editingContact: this.props.index })
         this.editable = true;
@@ -45,17 +48,10 @@ const Contacts = observer( class Contacts extends React.Component {
 
     updateName(event) {
         this.currentContact.name = event.target.value;
-        if (this.currentContact.name === "") {
-            this.nameError = true;
-        } else { this.nameError = false; }
     }
 
     updateEmail(event) {
         this.currentContact.email = event.target.value;
-
-        if (!this.currentContact.email.includes('@')) {
-            this.emailError = true;
-        } else { this.emailError = false; }
     }
 
     updateComment(event) {
@@ -63,37 +59,41 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 
     saveChanges() {
+        let { index, countryCode, updateSearchParams, updateContact } = this.props
+
         this.editable = false;
-        addOrUpdateContact(this.countryCode, this.props.index, this.currentContact)
-        this.props.updateSearchParams({ editingContact: null })
+        updateContact(countryCode, index, this.currentContact)
+        updateSearchParams({ editingContact: null })
     }
 
     cancelChanges() {
+        let { index, countryCode, updateSearchParams, deleteContact, localData } = this.props
+
         this.editable = false;
-        this.props.updateSearchParams({ editingContact: null })
-        if (this.localData.contacts[this.props.index].name === "") {
-            deleteContact(this.countryCode, this.props.index)
-            this.localData = getLocalData(this.countryCode)
+        updateSearchParams({ editingContact: null })
+        if (localData[countryCode].contacts[index].name === "") {
+            deleteContact(countryCode, index)
             return
         }
 
-        this.currentContact.name = this.localData.contacts[this.props.index].name;
-        this.currentContact.email = this.localData.contacts[this.props.index].email;
-        this.currentContact.comment = this.localData.contacts[this.props.index].comment;
+        this.currentContact.name = localData[countryCode].contacts[index].name;
+        this.currentContact.email = localData[countryCode].contacts[index].email;
+        this.currentContact.comment = localData[countryCode].contacts[index].comment;
     }
 
     deleteContact() {
-        deleteContact(this.countryCode, this.props.index);
-        this.localData = getLocalData(this.countryCode)
+        let { index, countryCode, deleteContact, getLocalData } = this.props
+
+        deleteContact(countryCode, index);
+        this.forceUpdate()
     }
 
     render() {
         let {
-            emailError,
-            nameError,
-            localData,
             editable,
             currentContact,
+            isNameValid,
+            isEmailValid,
             makeEditable,
             updateName,
             updateEmail,
@@ -103,56 +103,59 @@ const Contacts = observer( class Contacts extends React.Component {
             deleteContact
         } = this;
 
+        let {
+            localData,
+            countryCode,
+            index } = this.props
+
         return(
             <div>
             {
-                this.props.index in localData.contacts &&
+                index in localData[countryCode].contacts &&
                     <Card interactive={ true }>
-                        { nameError &&
-                            <p className={ "error-text" }>
-                                Name is required
-                            </p>
-                        }
                         <div>
                             { editable ?
-                                <InputGroup
+                                <ValidInputGroup
+                                    isError={ isNameValid }
+                                    errorMessage="Name is required"
                                     onChange={ updateName }
                                     value={ currentContact.name }
                                     placeholder="Name"
-                                    intent={ nameError ? "danger" : null }/>
+                                />
                                 :
-                                <p>{ localData.contacts[this.props.index].name }</p>
+                                <p>{ localData[countryCode].contacts[index].name }</p>
                             }
                         </div>
-                        { emailError &&
-                            <p className={ "error-text" }>
-                                Email addresses must include @
-                            </p>
-                        }
 
                         <div>Email: { editable ?
-                            <InputGroup
+                            <ValidInputGroup
+                                isError={ isEmailValid }
+                                errorMessage="Email addresses must include @"
                                 onChange={ updateEmail }
                                 placeholder="Enter a valid email address"
                                 value={ currentContact.email }
-                                intent={ emailError ? "danger" : null }/>
+                            />
                             :
-                            <p>{ localData.contacts[this.props.index].email }</p>
+                            <p>{ localData[countryCode].contacts[index].email }</p>
                         }</div>
 
                         <div>Comment: { editable ?
                             <InputGroup onChange={ updateComment } placeholder="Comment"
                                         value={ currentContact.comment }></InputGroup>
                             :
-                            <p>{ localData.contacts[this.props.index].comment }</p>
+                            <p>{ localData[countryCode].contacts[index].comment }</p>
                         }</div>
 
                         <div align={ "right" }>
                             { editable ?
                                 <div align="right">
                                     <Button className="card-button" onClick={ cancelChanges }>Cancel</Button>
-                                    <Button className="card-button" intent="primary" onClick={ saveChanges }
-                                            disabled={ emailError || nameError }>Save</Button>
+                                    <Button className="card-button"
+                                            intent="primary"
+                                            onClick={ saveChanges }
+                                            disabled={
+                                        !(isNameValid && isEmailValid)
+                                    }>Save</Button>
                                 </div>
                                 :
                                 <div align="right">
@@ -169,4 +172,4 @@ const Contacts = observer( class Contacts extends React.Component {
     }
 })
 
-export default Contacts;
+export default Contact;

@@ -3,8 +3,6 @@ import { Button, H6, InputGroup, TextArea } from "@blueprintjs/core";
 import { action, makeObservable, observable } from "mobx";
 import { observer } from "mobx-react";
 import "./App.css";
-import { countryKey } from "./common";
-import { getLocalData, setLocalData } from "./localCrud";
 
 const validUrl1 = "http://";
 const validUrl2 = "https://";
@@ -15,13 +13,11 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
 
     constructor(props) {
         super(props);
-        const countryCode = this.props.searchParams.get(countryKey)
-        this.localData = getLocalData(countryCode)
-        this.commentText = this.localData?.comment ?? "";
-        this.urlText = this.localData?.url ?? "";
+        this.countryData = this.props.localData[this.props.countryCode]
+        this.commentText = this.countryData.comment;
+        this.urlText = this.countryData.url;
 
         makeObservable(this, {
-            localData: observable,
             commentText:observable,
             urlText:observable,
             writable:observable,
@@ -57,23 +53,41 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
     }
 
     saveChanges() {
+        let {
+            localData,
+            countryCode,
+            setLocalData
+        } = this.props;
+
+        let {
+            commentText,
+            urlText
+        } = this;
+
         this.toggleReadability();
 
-        let countryCode = this.props.searchParams.get(countryKey);
-        setLocalData(countryCode, { comment: this.commentText, url: this.urlText })
+        setLocalData(countryCode, { ...localData[countryCode], comment: commentText, url: urlText })
     }
 
     cancelChanges() {
+        let {
+            localData,
+            countryCode
+        } = this.props;
+
         this.toggleReadability();
         this.error = false;
 
-        let parsed = JSON.parse(localStorage.getItem(this.props.searchParams.get(countryKey)));
-        console.log(parsed)
-        this.commentText = parsed.comment;
-        this.urlText = parsed.url;
+        this.commentText = localData[countryCode].comment;
+        this.urlText = localData[countryCode].url;
     }
 
     render() {
+        let {
+            localData,
+            countryCode
+        } = this.props;
+
         let {
             commentText,
             urlText,
@@ -84,13 +98,21 @@ const CountryUserCommentBox = observer( class CountryUserCommentBox extends Reac
         return (
             <div className="info-margin">
                 <H6 className="info-margin">Comment</H6>
-                <TextArea fill={ true } readOnly={ !writable } onChange={ this.setComment } value={ commentText } />
+                <TextArea
+                    fill={ true }
+                    readOnly={ !writable }
+                    onChange={ this.setComment }
+                    value={ writable ? commentText : localData[countryCode].comment } />
                 <H6 className="info-margin">URL</H6>
                 { error && <p className={ "error-text" }>
                     URLs must begin with "{validUrl1}" or "{validUrl2}"
                 </p>
                 }
-                <InputGroup readOnly={ !writable } onChange={ this.setUrl } value={ urlText } intent={ error ? "danger" : null } />
+                <InputGroup
+                    readOnly={ !writable }
+                    onChange={ this.setUrl }
+                    value={ writable ? urlText : localData[countryCode].url }
+                    intent={ error ? "danger" : null } />
                 <div className={ "info-margin" } />
                 { writable ?
                     <div>
