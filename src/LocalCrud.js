@@ -12,6 +12,7 @@ const LocalCrud = observer(class LocalCrud extends React.Component {
         super(props);
 
         makeObservable(this, {
+            getOrInitLocalData: action.bound,
             setLocalData: action.bound,
             addContact: action.bound,
             updateContact: action.bound,
@@ -45,52 +46,58 @@ const LocalCrud = observer(class LocalCrud extends React.Component {
     }
 
     addContact(countryKey) {
-        let currData = this.getLocalData(countryKey);
+        let localCountry = this.getOrInitLocalData(countryKey)
 
-        if (!currData) {
-            console.error(`Tried to add a contact to a nonexistent country -> Key: ${ countryKey }`)
-            return;
-        }
-
-        let contacts = currData.contacts;
-        let newIndex = ++currData.previousContactIndex;
+        let contacts = localCountry.contacts;
+        let newIndex = ++localCountry.previousContactIndex;
         contacts[newIndex] = { name:"", email:"", comment:"" };
 
         this.setLocalData(countryKey, {
-            ...currData,
+            ...localCountry,
             contacts: contacts,
             previousContactIndex: newIndex
         });
     }
 
     updateContact(countryKey, contactId, contact) {
-        let currData = this.getLocalData(countryKey);
+        let localCountry = this.getOrInitLocalData(countryKey);
 
-        if (!currData) {
+        if (!localCountry) {
             console.error(`Tried to update a contact from a nonexistent country -> Key: ${ countryKey }`);
             return;
         }
 
-        let contacts = { ...currData.contacts };
+        let contacts = { ...localCountry.contacts };
         contacts[contactId] = { ...contact };
-        this.setLocalData(countryKey, { ...currData, contacts });
+        this.setLocalData(countryKey, { ...localCountry, contacts });
     }
 
     deleteContact(countryKey, contactId) {
-        let currData = this.getLocalData(countryKey);
+        let localCountry = this.getOrInitLocalData(countryKey);
 
-        if (!currData) {
+        if (!localCountry) {
             console.error(`Tried to delete a contact from a nonexistent country -> Key: ${ countryKey }`)
             return;
         }
 
-        let contacts = currData.contacts;
+        let contacts = localCountry.contacts;
         let newContacts = {};
         for (const [key, value] of Object.entries(contacts))
             if (key !== contactId)
                 newContacts[key] = value;
 
-        this.setLocalData(countryKey, { ...currData, contacts: newContacts });
+        this.setLocalData(countryKey, { ...localCountry, contacts: newContacts });
+    }
+
+    getOrInitLocalData(countryKey) {
+        let currData = this.getLocalData(countryKey);
+
+        if (!currData) {
+            this.setLocalData(countryKey);
+            currData = this.getLocalData(countryKey);
+        }
+
+        return currData
     }
 
     getLocalData = (countryKey) => {

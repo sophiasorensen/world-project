@@ -1,6 +1,4 @@
-import { observer } from "mobx-react";
 import React from "react";
-import { makeObservable } from "mobx";
 import { InputGroup } from "@blueprintjs/core";
 
 class ValidInputGroup extends React.Component {

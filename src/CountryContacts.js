@@ -1,7 +1,7 @@
 import React from "react";
 import { observer } from "mobx-react";
 import { Button } from "@blueprintjs/core";
-import { action, makeObservable, observable } from "mobx";
+import { action, makeObservable } from "mobx";
 import Contact from "./Contact";
 import { editingContactKey } from "./common";
 
@@ -22,8 +22,6 @@ const CountryContacts = observer(class CountryContacts extends React.Component {
     }
 
     render() {
-        console.log("country contacts")
-
         let {
             createContact,
             props

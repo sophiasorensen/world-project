@@ -4,8 +4,7 @@ import React from "react";
 import CountryDialog from "./CountryDialog";
 import { createSearchParams, useSearchParams } from "react-router-dom";
 import Header from "./Header";
-import {observer} from "mobx-react";
-import {Button} from "@blueprintjs/core";
+import { observer } from "mobx-react";
 
 const Page = observer(({ getLocalData, setLocalData, addContact, updateContact, deleteContact }) => {
     let [ searchParams, setSearchParams ] = useSearchParams(createSearchParams());

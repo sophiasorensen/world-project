@@ -82,7 +82,7 @@ const CountryUserCommentBox = observer(class CountryUserCommentBox extends React
     render() {
         let {
             writable, error, commentText,
-            urlText, props, saveChanges,
+            urlText, saveChanges,
             cancelChanges, toggleReadability, setUrl, setComment } = this;
 
         return (
