@@ -45,9 +45,7 @@
 }
 
 .info-margin {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    min-height: 10px;
+    margin-bottom: 10px;
 }
 
 .error-text {
@@ -56,7 +54,7 @@
 }
 
 .button-margin {
-    margin-right: 3px;
+    margin-right: 5px;
 }
 
 .dialog-button {
@@ -65,5 +63,9 @@
 }
 
 .card-button {
-    margin-left: 2px;
+    margin-left: 5px;
+}
+
+.margin-below {
+    margin-bottom: 10px;
 }

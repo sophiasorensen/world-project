@@ -1,7 +1,6 @@
 const worldCode = "WO";
 const countryKey = "country";
 const continentKey = "continent";
+const editingContactKey = "editingContact";
 
-const contactKey = "editingContact";
-
-export { countryKey, continentKey, contactKey, worldCode }
+export { countryKey, continentKey, editingContactKey, worldCode }

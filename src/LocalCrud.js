@@ -1,83 +1,111 @@
 import React from "react";
 import { observer } from "mobx-react";
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import Page from "./Page";
 
-const LocalCrud = observer( class Contacts extends React.Component {
-    currData = observable.map({}, { deep:false })
+const localKey = "world-project"
+
+const LocalCrud = observer(class LocalCrud extends React.Component {
+    currData = observable.map({ }, { deep: false });
+
     constructor(props) {
         super(props);
 
         makeObservable(this, {
+            getOrInitLocalData: action.bound,
             setLocalData: action.bound,
             addContact: action.bound,
             updateContact: action.bound,
             deleteContact: action.bound,
-            getLocalData: action.bound,
-        })
+        });
+
+        const initLocalData = JSON.parse(localStorage.getItem(localKey));
+
+        if (initLocalData)
+            this.currData.replace(initLocalData);
     }
-    setLocalData(countryKey, { comment, url, contacts, previousContactIndex } = {}) {
+
+    setLocalData(countryKey, { comment, url, contacts, previousContactIndex } = { }) {
         if (!countryKey) {
-            console.log("No country, cannot set local data");
+            console.error("No country key provided, cannot set local data");
             return null;
         }
 
-        this.currData[countryKey] = {
+        this.currData.set(countryKey, {
             comment: comment ?? "",
             url: url ?? "",
-            contacts: contacts ?? {},
+            contacts: contacts ?? { },
             previousContactIndex: previousContactIndex ?? 0,
-        }
+        });
 
-        localStorage.setItem(countryKey, JSON.stringify(this.currData[countryKey]))
+        let newLocalData = { };
+        this.currData.forEach((value, key) => newLocalData[key] = value);
+        newLocalData[countryKey] = this.currData.get(countryKey);
+
+        localStorage.setItem(localKey, JSON.stringify(newLocalData));
     }
 
     addContact(countryKey) {
-        let currData = this.getLocalData(countryKey);
-        let contacts = currData.contacts;
-        let newIndex = ++currData.previousContactIndex
-        contacts[newIndex] = { name:"", email:"", comment:"" }
+        let localCountry = this.getOrInitLocalData(countryKey)
+
+        let contacts = localCountry.contacts;
+        let newIndex = ++localCountry.previousContactIndex;
+        contacts[newIndex] = { name:"", email:"", comment:"" };
+
         this.setLocalData(countryKey, {
-            ...currData,
+            ...localCountry,
             contacts: contacts,
             previousContactIndex: newIndex
-        })
+        });
     }
 
-     updateContact(countryKey, index, contact) {
-        let currData = this.getLocalData(countryKey);
-        let contacts = { ...currData.contacts };
-        let name = contact.name
-        let email = contact.email
-        let comment = contact.comment
-        contacts[index] = { name, email, comment };
+    updateContact(countryKey, contactId, contact) {
+        let localCountry = this.getOrInitLocalData(countryKey);
 
-        this.setLocalData(countryKey, { ...currData, contacts: contacts })
-    }
-
-     deleteContact(countryKey, index) {
-        let currData = this.getLocalData(countryKey);
-        let contacts = currData.contacts;
-        let newContacts = {}
-        for (const [key, value] of Object.entries(contacts)) {
-            if (key !== index) {
-                newContacts[key] = value
-            }
+        if (!localCountry) {
+            console.error(`Tried to update a contact from a nonexistent country -> Key: ${ countryKey }`);
+            return;
         }
-        this.setLocalData(countryKey, { ...currData, contacts: newContacts })
+
+        let contacts = { ...localCountry.contacts };
+        contacts[contactId] = { ...contact };
+        this.setLocalData(countryKey, { ...localCountry, contacts });
     }
 
-     getLocalData(countryKey) {
-        let countryData = this.currData[countryKey]
-        if (!countryData) {
+    deleteContact(countryKey, contactId) {
+        let localCountry = this.getOrInitLocalData(countryKey);
+
+        if (!localCountry) {
+            console.error(`Tried to delete a contact from a nonexistent country -> Key: ${ countryKey }`)
+            return;
+        }
+
+        let contacts = localCountry.contacts;
+        let newContacts = {};
+        for (const [key, value] of Object.entries(contacts))
+            if (key !== contactId)
+                newContacts[key] = value;
+
+        this.setLocalData(countryKey, { ...localCountry, contacts: newContacts });
+    }
+
+    getOrInitLocalData(countryKey) {
+        let currData = this.getLocalData(countryKey);
+
+        if (!currData) {
             this.setLocalData(countryKey);
-            countryData = JSON.parse(localStorage.getItem(countryKey));
+            currData = this.getLocalData(countryKey);
         }
-        return countryData;
+
+        return currData
+    }
+
+    getLocalData = (countryKey) => {
+        return this.currData.get(countryKey);
     }
 
     render() {
-        let { currData,
+        let {
             getLocalData,
             setLocalData,
             addContact,
@@ -86,13 +114,12 @@ const LocalCrud = observer( class Contacts extends React.Component {
         } = this;
 
         return (
-            <Page localData={ currData }
-                  getLocalData={ getLocalData }
+            <Page getLocalData={ getLocalData }
                   setLocalData={ setLocalData }
                   addContact={ addContact }
                   updateContact={ updateContact }
                   deleteContact={ deleteContact }
-            />
+                  />
         );
     }
 })
